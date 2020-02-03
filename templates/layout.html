@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta property="og:locale" content="ja_JP" />
+    <meta property="og:site_name" content="DrillHawk" />
+    <meta property="og:image" content="{{ url_for('static', filename='./image/logo.png') }}" />
+    <link rel="apple-touch-icon-precomposed" href="{{ url_for('static', filename='./image/logo.png') }}" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-datepicker.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    {% block css %}{% endblock %}
+    <title>DrillHawk</title>
+  </head>
+  <body>
+    {% block body %}{% endblock %}
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+
+    {% block script %}{% endblock %}
+
+  </body>
+</html>

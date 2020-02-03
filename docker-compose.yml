@@ -1,0 +1,12 @@
+version: "3"
+services:
+  web:
+    build: .
+    ports:
+      # flask port 5000 -> local 5001
+      - "5001:5000"
+    volumes:
+      - .:/app
+    environment:
+      - ES_ENDPOINT={ElasticSearch-endpoint}
+      - ES_INDEX_NAME={workflow-index-name}

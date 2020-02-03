@@ -1,0 +1,211 @@
+{% extends "layout.html" %}
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/datatables.min.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-datepicker.min.css') }}">
+{% endblock %}
+
+{% block body %}
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="#">
+    <img src="{{ url_for('static', filename='./image/logo.png') }}" style="max-height: 30px" class="d-inline-block align-top" alt="">
+    DrillHawk
+  </a>
+  <a class="nav-item nav-link active" href="#">Home <span class="sr-only">(current)</span></a>
+</nav>
+
+<div class="container">
+  <form>
+    <div class="form-group">
+      <div class="row"> <div class="col">
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text">keywords</span>
+          </div>
+          <input type="text" name="keyword1" placeholder="input keyword..." aria-label="keywords1" class="form-control col-sm-3" value="{{ keyword1 }}">
+          <input type="text" name="keyword2" placeholder="input keyword..." aria-label="keywords1" class="form-control col-sm-3" value="{{ keyword2 }}">
+          <input type="text" name="keyword3" placeholder="input keyword..." aria-label="keywords3" class="form-control col-sm-3" value="{{ keyword3 }}">
+        </div>
+      </div> </div>
+
+      <div class="row"> <div class="col">
+        <div class="input-group mb-3 input-daterange" id="datepicker">
+          <div class="input-group-prepend">
+            <span class="input-group-text">date range</span>
+          </div>
+          <input type="text" name="from_date" class="form-control col-sm-3" value="{{ from_date }}">
+          <div class="input-group-addon">
+            <span class="input-group-text">to</span>
+          </div>
+          <input type="text" name="to_date" class="form-control col-sm-3" value="{{ to_date }}">
+
+          <button type="submit" class="btn btn-primary offset-sm-1 col-sm-2">filter</button>
+        </div>
+      </div> </div>
+    </div>
+  </form>
+</div>
+
+<div class="container-fluid">
+  <form><!-- table check from -->
+
+  <div class="form-inline">
+    <div class="form-group mb-2">
+      <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Workflows Operation
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <a class="dropdown-item" id="act_elapsed_time" act="elapsed_time">Elapsed Time</a>
+          <a class="dropdown-item" id="act_usage_fee" act="usage_fee">Usage Fee</a>
+        </div>
+      </div>
+      <div class="form-group mx-sm-3 mb-2">
+        <div class="form-check">
+          <input type="checkbox" value="1" class="form-check-input" id="nocheck_list_hidden">
+          <label class="form-check-label" for="nocheck_list_hidden">Hide unchecked workflows</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table id="list" class="table table-sm table-hover table-striped">
+    <thead class="thead-light">
+      <tr>
+        <th scope="col" >#</th>
+        <th scope="col" >workflow name</th>
+        <th scope="col" >input runid</th>
+        <th scope="col" >step </th>
+        <th scope="col" >time</th>
+        <th scope="col" >start date</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for wf in contents %}
+      {% set name = wf['workflow']['cwl_file'].split('-')[0] %}
+      <tr>
+        <th scope="row">
+          <div class="form-group form-check">
+            <input type="checkbox" class="form-check-input" name="workflow_check[]" value="{{ wf['workflow']['cwl_file'] }}">
+          {{wf.no}}
+          </div>
+        </th>
+
+        <td> {{name}} </td>
+
+        <td> {% if wf['workflow']['inputs'] %}
+            {{wf['workflow']['inputs']['filename']}}<br>
+            {{ '{:,d}'.format(wf['workflow']['inputs']['total_size']) }}bytes
+            {% endif %}
+        </td>
+        <td>
+            {% for step_name in wf['steps'] %}
+                {{step_name}}<br>
+            {% endfor %}
+        </td>
+        <td><p class="text-right">
+          {{ '{:,.0f}'.format(wf['workflow']['workflow_elapsed_sec']) }} sec </p></td>
+        <td> {{wf['workflow']['start_date']}} </td>
+      </tr>
+    {% endfor%}
+    </tbody>
+    </table>
+  </div>
+  </form><!-- table check from -->
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="{{ url_for('static', filename='js/bootstrap-datepicker.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/datatables.min.js') }}"></script>
+<script>
+$(function(){
+  $('#datepicker input').datepicker({
+    format: "yyyy-mm-dd",
+    autoclose: true
+  });
+  jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+    "formatted-num-pre": function ( a ) {
+      a = (a === "-" || a === "") ? 0 : a.replace( /[^\d\-\.]/g, "");
+      return parseFloat(a);
+    },
+
+    "formatted-num-asc": function (a, b) {
+      return a - b;
+    },
+
+    "formatted-num-desc": function (a, b) {
+      return b - a;
+    }
+  });
+  $('#list').DataTable(
+    {
+      columnDefs: [{ type: 'formatted-num', targets: 4 }],
+      lengthChange: false,
+      searching: false,
+      paging: false,
+      info: false
+    }
+  );
+
+  // check workflow action
+  $('input[name="workflow_check[]"]').click(function() {
+    var tr = $(this).parent().parent().parent('tr');
+    var checked = $(this).prop('checked');
+    if (checked == true) {
+      // change checked color
+      tr.attr('class', 'table-info');
+    } else {
+      // change unchecked color
+      tr.attr('class', '');
+    }
+  });
+
+  // hide or display no check workflow
+  $("#nocheck_list_hidden").on("click", function(event) {
+    // no checked workflow pickup
+    var hidden_checked = $(this).prop('checked');
+    var ope = 'show';
+    if (hidden_checked == true) {
+      // hide no check workflow
+      ope = 'hide';
+    }
+
+    $('input[name="workflow_check[]"]').each(function() {
+      var tr = $(this).parent().parent().parent('tr');
+      var checked = $(this).prop('checked');
+      if (checked != true) {
+        if (ope == 'show') {
+          tr.show();
+        } else {
+          tr.hide();
+        }
+      }
+    });
+  });
+
+  // workflow list checkbox operation
+  $("#act_elapsed_time,#act_usage_fee").on("click", function(event) {
+    var act;
+    if (this.id == 'act_elapsed_time') {
+      act = 'elapsed_time';
+    } else {
+      act = 'usage_fee';
+    }
+
+    // checked workflow pickup
+    var checklist = [];
+    $('input[name="workflow_check[]"]:checked').each(function() {
+      checklist.push($(this).val());
+    });
+    if (checklist.length > 0) {
+      // move to graph
+      url = './show?type=' + act + '&workflow_id='+checklist;
+      window.open(url, '_blank');
+    }
+    return true;
+  });
+
+});
+</script>
+{% endblock %}
