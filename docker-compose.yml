@@ -8,5 +8,5 @@ services:
     volumes:
       - .:/app
     environment:
-      - ES_ENDPOINT={ElasticSearch-endpoint}
-      - ES_INDEX_NAME={workflow-index-name}
+      - ES_ENDPOINT=${ES_ENDPOINT}
+      - ES_INDEX_NAME=${ES_INDEX_NAME}
