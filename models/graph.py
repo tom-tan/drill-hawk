@@ -19,7 +19,6 @@ class Graph:
             "r5.2xlarge": 0.608,
             "r5.4xlarge": 1.216,
         }
-
         self.cwl_ = cwl
         if graph_type == "elapsed_time":
             self.graph_name = "Elapsed Time"
@@ -62,12 +61,16 @@ class Graph:
             d3_workflow["total_memory"] = step_keys["platform"]["total_memory"]
 
             # workflow_id shorting
+            # converted_reconf_hisat2-6d6a34a6e1c711e880080210a3f1930c
+            # -> converted_reconf_hisat2-6d6a34(6bytes)
             workflow_id = wf["cwl_file"][:-26]
             d3_workflow["workflow_id"] = workflow_id
             d3_workflow["workflow_name"] = workflow_id
             d3_workflow["input_runid"] = wf["inputs"]["filename"]
             d3_workflow["input_size"] = wf["inputs"]["total_size"]
             d3_workflow["workflow_elapsed_sec"] = wf["workflow_elapsed_sec"]
+            d3_workflow["prepare_elapsed_sec"] = wf["prepare_elapsed_sec"]
+            d3_workflow["total_reconf_elapsed_sec"] = res["total_reconf_elapsed_sec"]
 
             #
             # d3.js グラフ json data用
@@ -101,6 +104,31 @@ class Graph:
 
             # 表用
             steps.append(step_keys)
+
+        #
+        # reconf合計 stepを追加する
+        #
+        name = "_total_reconf"
+        d3_workflow["id-{}".format(name)] = "{}-01".format(name)
+        d3_workflow["time-{}".format(name)] = res["total_reconf_elapsed_sec"]
+        d3_workflow["cost-{}".format(name)] = 0
+        d3_workflow["start-{}".format(name)] = ""
+        d3_workflow["end-{}".format(name)] = ""
+        # グラフ出力する項目名の設定
+        self.total_keys.insert(0, "{:02d}-{}-{}".format(2, self.graph_sym, name))
+        steps.insert(0, self.null_metrics(name))
+
+        #
+        # prepare stepを追加する
+        #
+        name = "_prepare"
+        d3_workflow["id-{}".format(name)] = "{}-01".format(name)
+        d3_workflow["time-{}".format(name)] = wf["prepare_elapsed_sec"]
+        d3_workflow["cost-{}".format(name)] = 0
+        d3_workflow["start-{}".format(name)] = ""
+        d3_workflow["end-{}".format(name)] = ""
+        self.total_keys.insert(0, "{:02d}-{}-{}".format(1, self.graph_sym, name))
+        steps.insert(0, self.null_metrics(name))
 
         #
         # グラフデータのモデル最終構築

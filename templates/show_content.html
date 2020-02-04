@@ -44,6 +44,7 @@
                 <th scope="col">step name</th>
                 <th scope="col">instance</th>
                 <th scope="col">container_image<br>tool status</th>
+                <th scope="col">AS/RA cost</th>
                 <th scope="col">job cost <br> timestamp</th>
                 <th scope="col">container_id</th>
               </tr>
@@ -60,11 +61,30 @@
                 <span class="small_font">Mem:</span> {{ '{:,.0f}'.format(step.platform.total_memory/(1024*1024*1024)) }}GiB<br>
                 <span class="small_font">CPU NUM:</span> {{ step.platform.ncpu_cores }}<br>
                 {% endif %}
+
               </td>
               <td> {{ step.container.process.image }}<br> {{ step.tool_status }}</td>
               <td>
                 {% if step.step_name[0] != '_' %}
-                <div> <span class="small_font">cost:</span>
+                <div class="ra_cost_time">
+                  <span class="small_font">TOTAL:</span>
+                  {{ '{:,}'.format(step.reconf_elapsed_sec) }} sec
+                </div>
+                <span class="ra_cost_time">(<span class="small_font">AS:</span>
+                  {{ '{:,}'.format(step.as_elapsed_sec) }} sec
+                  / <span class="small_font">RA:</span>
+                  {{ '{:,}'.format(step.ra_elapsed_sec) }} sec)</span>
+                {% elif step.step_name == '_prepare' %}
+                <span class="ra_cost_time"> <span class="small_font">TOTAL:</span>
+                  {{ '{:,}'.format(content.prepare_elapsed_sec) }} sec</span>
+                {% else %}
+                <span class="ra_cost_time"> <span class="small_font">TOTAL:</span>
+                  {{ '{:,}'.format(content.total_reconf_elapsed_sec) }} sec</span>
+                {% endif %}
+              </td>
+              <td>
+                {% if step.step_name[0] != '_' %}
+                <div class="ra_cost_time"> <span class="small_font">TOTAL:</span>
                   {{ '{:,}'.format(step.step_elapsed_sec) }} sec</div>
                 {{ step.start_date }}<br>{{ step.end_date }}
                 {% endif %}
