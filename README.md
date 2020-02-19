@@ -5,7 +5,7 @@ It enables us to take a [drill down](https://en.wikipedia.org/wiki/Drill_down) a
 
 # Requirements
 
-- Python 3.6 or later
+- Python 3.7
 - Elasticsearch that stores workflow metrics collected by CWL-metrics or its compatible metrics collector
 - Kibana
   - [Setup](doc/manual.md) is needed to drill down from DrillHawk
