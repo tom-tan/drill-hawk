@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from datetime import datetime
 import re
 import copy
 import yaml
@@ -13,7 +12,7 @@ class Graph:
         with open("aws_prices.yml", "rb") as file:
             prices = yaml.safe_load(file)
             if "prices" not in prices:
-                raise("aws_prices.yaml do not have `prices`")
+                raise ("aws_prices.yaml do not have `prices`")
             self.prices_ = prices["prices"]
 
         self.cwl_ = cwl
@@ -43,10 +42,12 @@ class Graph:
                 instance_cost = item["price"]
 
         if instance_cost == -1:
-            print ("{} instance_cost is not found in aws_prices.yml".format(instance_type))
-            raise("unkown instance_type")
+            print(
+                "{} instance_cost is not found in aws_prices.yml".format(instance_type)
+            )
+            raise ("unkown instance_type")
 
-        return workflow_elapsed_sec * instance_cost / 60.0 # 60minutes
+        return workflow_elapsed_sec * instance_cost / 60.0  # 60minutes
 
     # 指定されたworkflow のstepを抽出
     def build(self, res):
@@ -61,7 +62,7 @@ class Graph:
 
         for step_name in res["steps"]:
             # remove step_no in step_name-99
-            step_name_without_no = re.sub("-\d+$", "", step_name)
+            step_name_without_no = re.sub(r"-\d+$", "", step_name)
             step_keys = res["steps"][step_name]
             step_keys["step_name"] = step_name
 

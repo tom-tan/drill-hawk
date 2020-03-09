@@ -3,12 +3,11 @@
  DrillHawk
 """
 
-from flask import Flask, render_template, abort, request, redirect
+from flask import Flask, render_template, request, redirect
 from models.cwl_metrics import CwlMetrics
 from models.graph import Graph
 import os
 import json
-import datetime
 
 #
 # Flask Initialize
@@ -29,7 +28,7 @@ if "ES_INDEX_NAME" in os.environ:
 
 def url_for_static(filename):
     root = app.config.get("STATIC_ROOT", "")
-    return join(root, filename)
+    return ''.join(root, filename)
 
 
 @app.route("/")
