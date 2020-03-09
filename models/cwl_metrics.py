@@ -77,7 +77,7 @@ class CwlMetrics:
             date_ranges.append(
                 {
                     "range": {
-                        "workflow.end_date": {"to": "{}T23:59:59.999".format(end_date),}
+                        "workflow.end_date": {"to": "{}T23:59:59.999".format(end_date)}
                     }
                 }
             )
@@ -104,8 +104,6 @@ class CwlMetrics:
         workflows = []
         no = 1
         for hit in res["hits"]["hits"]:
-            eid = hit["_id"]  # ElasticSearch index id
-
             # add no
             hit["_source"]["no"] = no
 
@@ -115,7 +113,6 @@ class CwlMetrics:
             hit["_source"]["workflow"][
                 "workflow_elapsed_sec"
             ] = self.workflow_elapsed_sec(start_date, end_date)
-            # print("{} {}".format(eid, start_date))
 
             # step 情報がなければskip
             if "steps" not in hit["_source"] or len(hit["_source"]["steps"]) == 0:
@@ -143,7 +140,6 @@ class CwlMetrics:
 
         workflows = []
         for hit in res["hits"]["hits"]:
-            eid = hit["_id"]  # ElasticSearch index id
 
             #
             # workflow_elapsed_sec計算

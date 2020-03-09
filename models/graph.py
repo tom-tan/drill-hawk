@@ -1,24 +1,19 @@
 # -*- coding: utf-8 -*-
 
-from datetime import datetime
 import re
 import copy
+import yaml
 
 
 class Graph:
     def __init__(self, cwl, graph_type):
         # AWS Cost per a hour(ap-northeast-1)
-        self.costs_ = {
-            "t2.medium": 0.0608,
-            "t3.large": 0.1088,
-            "c5.2xlarge": 0.428,
-            "c5.4xlarge": 0.856,
-            "m5.2xlarge": 0.496,
-            "m5.4xlarge": 0.992,
-            "r5.large": 0.152,
-            "r5.2xlarge": 0.608,
-            "r5.4xlarge": 1.216,
-        }
+        self.prices_ = []
+        with open("aws_prices.yml", "rb") as file:
+            prices = yaml.safe_load(file)
+            if "prices" not in prices:
+                raise ("aws_prices.yaml do not have `prices`")
+            self.prices_ = prices["prices"]
 
         self.cwl_ = cwl
         if graph_type == "elapsed_time":
@@ -39,6 +34,21 @@ class Graph:
         self.total_keys = []
         self.workflows = []
 
+    def get_cost(self, instance_type, workflow_elapsed_sec):
+
+        instance_cost = -1
+        for item in self.prices_:
+            if item["name"] == instance_type:
+                instance_cost = item["price"]
+
+        if instance_cost == -1:
+            print(
+                "{} instance_cost is not found in aws_prices.yml".format(instance_type)
+            )
+            raise ("unkown instance_type")
+
+        return workflow_elapsed_sec * instance_cost / 60.0  # 60minutes
+
     # 指定されたworkflow のstepを抽出
     def build(self, res):
 
@@ -52,7 +62,7 @@ class Graph:
 
         for step_name in res["steps"]:
             # remove step_no in step_name-99
-            step_name_without_no = re.sub("-\d+$", "", step_name)
+            step_name_without_no = re.sub(r"-\d+$", "", step_name)
             step_keys = res["steps"][step_name]
             step_keys["step_name"] = step_name
 
@@ -81,9 +91,10 @@ class Graph:
             d3_workflow["itype-{}".format(step_name_without_no)] = instance_type
             d3_workflow["time-{}".format(step_name_without_no)] = workflow_elapsed_sec
             # cost(fee/hour) * cost time(sec)
-            d3_workflow["cost-{}".format(step_name_without_no)] = (
-                workflow_elapsed_sec * self.costs_[instance_type] / 60.0
+            d3_workflow["cost-{}".format(step_name_without_no)] = self.get_cost(
+                instance_type, workflow_elapsed_sec
             )
+
             d3_workflow["id-{}".format(step_name_without_no)] = step_keys["container"][
                 "process"
             ]["id"]

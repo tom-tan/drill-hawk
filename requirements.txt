@@ -1,2 +1,3 @@
-flask
-elasticsearch
+flask==1.1.1
+elasticsearch==7.5.1
+PyYAML==5.2
