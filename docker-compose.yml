@@ -11,4 +11,8 @@ services:
       - ES_ENDPOINT=${ES_ENDPOINT}
       - ES_INDEX_NAME=${ES_INDEX_NAME}
       - KIBANA_ENDPOINT=${KIBANA_ENDPOINT}
-    command: bash /app/setup.sh
+    command: >
+      /bin/sh -c
+      "envsubst < static/js/config.js.template
+      > static/js/config.js
+      && python app.py"
