@@ -16,12 +16,13 @@ $ git clone https://bitbucket.org/dynreconf/drill-hawk.git
 $ cd drill-hawk
 $ pip install -r requirements.txt
 $ export ES_INDEX_NAME=workflow
-$ export ES_ENDPOINT=$ELASTIC_SEARCH_IP:9200
+$ export ES_ENDPOINT=10.0.0.100:9200
+$ export KIBANA_ENDPOINT=10.0.0.100:5601
 $ python app.py
 ```
 
 You can see the list of collected workflow execution records at `http://localhost:5001/`.
-You can configure the index name and the endpoint of Elasticsearch by using `ES_INDEX_NAME` and `ES_ENDPOINT`, respectively.
+You can configure the index name and the endpoint of Elasticsearch by using `ES_INDEX_NAME` and `ES_ENDPOINT`, `KIBANA_ENDPOINT` respectively.
 
 # Starting DrillHawk server using docker-compose
 If you prefer using docker containers, you can start DrillHawk server by using the following command:
