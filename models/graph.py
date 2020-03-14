@@ -11,10 +11,10 @@ class Graph:
     def __init__(self, cwl, graph_type):
         # AWS Cost per a hour(ap-northeast-1)
         self.prices_ = []
-        with open("aws_prices.yml", "rb") as file:
+        with open("prices.yml", "rb") as file:
             prices = yaml.safe_load(file)
             if "prices" not in prices:
-                raise ("aws_prices.yaml do not have `prices`")
+                raise ("prices.yaml do not have `prices`")
             self.prices_ = prices["prices"]
 
         self.cwl_ = cwl
@@ -44,9 +44,7 @@ class Graph:
                 instance_cost = item["price"]
 
         if instance_cost == -1:
-            print(
-                "{} instance_cost is not found in aws_prices.yml".format(instance_type)
-            )
+            print("{} instance_cost is not found in prices.yml".format(instance_type))
             raise ("unkown instance_type")
 
         return workflow_elapsed_sec * instance_cost / 60.0  # 60minutes

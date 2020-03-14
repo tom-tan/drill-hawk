@@ -30,7 +30,7 @@ if "ES_INDEX_NAME" in os.environ:
 
 def url_for_static(filename):
     root = app.config.get("STATIC_ROOT", "")
-    return ''.join(root, filename)
+    return "".join(root, filename)
 
 
 @app.route("/")
