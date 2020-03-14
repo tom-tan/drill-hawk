@@ -1,4 +1,4 @@
-# AWS Cost per a hour (ap-northeast-1)
+# AWS Cost USD per a hour (ap-northeast1)
 prices:
   - name: t2.medium
     price: 0.0608
