@@ -201,25 +201,25 @@ class CwlMetrics:
                 hit["_source"]["steps"][step_name]["ra_elapsed_sec"] = 0
                 # reconf 時間
                 if "reconf" in val:
-                    start_date = val["reconf"]["start_time"]
-                    end_date = val["reconf"]["end_time"]
-                    reconf_elapsed_sec = self.workflow_elapsed_sec(start_date, end_date)
+                    reconf_start_date = val["reconf"]["start_time"]
+                    reconf_end_date = val["reconf"]["end_time"]
+                    reconf_elapsed_sec = self.workflow_elapsed_sec(reconf_start_date, reconf_end_date)
                     hit["_source"]["steps"][step_name][
                         "reconf_elapsed_sec"
                     ] = reconf_elapsed_sec
                     # print("ReCONF {} ({} - {}) {} sec".format(step_name, start_date, end_date, reconf_elapsed_sec))
 
                     # RA 時間
-                    start_date = val["reconf"]["ra"]["start_time"]
-                    end_date = val["reconf"]["ra"]["end_time"]
-                    ra_elapsed_sec = self.workflow_elapsed_sec(start_date, end_date)
+                    ra_start_date = val["reconf"]["ra"]["start_time"]
+                    ra_end_date = val["reconf"]["ra"]["end_time"]
+                    ra_elapsed_sec = self.workflow_elapsed_sec(ra_start_date, ra_end_date)
                     hit["_source"]["steps"][step_name][
                         "ra_elapsed_sec"
                     ] = ra_elapsed_sec
                     # print("RA {} ({} - {}) {} sec".format(step_name, start_date, end_date, reconf_elapsed_sec))
 
-                    # AS時間 = reconf時間 - RA時間
-                    as_elapsed_sec = reconf_elapsed_sec - ra_elapsed_sec
+                    # AS Core処理時間 = reconf開始時間 - RA開始時間
+                    as_elapsed_sec = self.workflow_elapsed_sec(reconf_start_date, ra_start_date)
                     hit["_source"]["steps"][step_name][
                         "as_elapsed_sec"
                     ] = as_elapsed_sec
