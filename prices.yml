@@ -1,4 +1,5 @@
-# AWS Cost USD per a hour (ap-northeast1)
+# Amazon EC2 On-Demand Pricing in US dollars per hour
+# Example of ap-northeast-1 region
 prices:
   - name: t2.medium
     price: 0.0608
