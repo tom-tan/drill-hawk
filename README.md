@@ -14,10 +14,10 @@ It enables us to take a [drill down](https://en.wikipedia.org/wiki/Drill_down) a
 ```console
 $ git clone https://bitbucket.org/dynreconf/drill-hawk.git
 $ cd drill-hawk
-$ pip install -r requirements.txt
 $ export ES_INDEX_NAME=workflow
 $ export ES_ENDPOINT=10.0.0.100:9200
 $ export KIBANA_ENDPOINT=10.0.0.100:5601
+$ sed "s/\${KIBANA_ENDPOINT}/${KIBANA_ENDPOINT}/" static/js/config.js.template > static/js/config.js
 $ python app.py
 ```
 
@@ -30,3 +30,18 @@ If you prefer using docker containers, you can start DrillHawk server by using t
 ```console
 $ docker-compose up
 ```
+
+# OpenSource software license information
+
+## The BSD 3-Clause License
+
+https://opensource.org/licenses/BSD-3-Clause
+
+- D3.js (version 4.13.0) ... `static/js/d3.v4.min.js`
+
+## The MIT License (MIT)
+
+https://opensource.org/licenses/MIT
+
+- Bootstrap (version 4.1.3) ... `static/js/bootstrap.min.js`
+- DataTables (version 1.10.18) ... `static/js/datatables.min.js`
