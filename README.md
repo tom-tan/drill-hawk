@@ -32,7 +32,7 @@ If you prefer using docker containers, you can start DrillHawk server by using t
 $ docker-compose up
 ```
 
-# OpenSource software license information
+# Third Party Software Licenses
 
 ## The BSD 3-Clause License
 
