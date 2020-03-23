@@ -14,6 +14,7 @@ It enables us to take a [drill down](https://en.wikipedia.org/wiki/Drill_down) a
 ```console
 $ git clone https://bitbucket.org/dynreconf/drill-hawk.git
 $ cd drill-hawk
+$ pip install -r requirements.txt
 $ export ES_INDEX_NAME=workflow
 $ export ES_ENDPOINT=10.0.0.100:9200
 $ export KIBANA_ENDPOINT=10.0.0.100:5601
