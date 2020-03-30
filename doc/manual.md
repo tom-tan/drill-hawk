@@ -45,6 +45,10 @@ docker-compose up -d
 
 ## Web Interface
 
+Web UI を利用するには、ブラウザから以下の URL にアクセスする。
+
+<http://{running-host-ip}:5001/dh/>
+
 ### ワークフローリスト画面
 
 Elasticsearchに保存されているワークフローのリスト表示。
