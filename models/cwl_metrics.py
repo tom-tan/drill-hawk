@@ -201,16 +201,6 @@ class CwlMetrics:
                 hit["_source"]["steps"][step_name]["ra_elapsed_sec"] = 0
                 # reconf 時間
                 if "reconf" in val:
-                    reconf_start_date = val["reconf"]["start_time"]
-                    reconf_end_date = val["reconf"]["end_time"]
-                    reconf_elapsed_sec = self.workflow_elapsed_sec(
-                        reconf_start_date, reconf_end_date
-                    )
-                    hit["_source"]["steps"][step_name][
-                        "reconf_elapsed_sec"
-                    ] = reconf_elapsed_sec
-                    # print("ReCONF {} ({} - {}) {} sec".format(step_name, start_date, end_date, reconf_elapsed_sec))
-
                     # RA 時間
                     ra_start_date = val["reconf"]["ra"]["start_time"]
                     ra_end_date = val["reconf"]["ra"]["end_time"]
@@ -223,6 +213,7 @@ class CwlMetrics:
                     # print("RA {} ({} - {}) {} sec".format(step_name, start_date, end_date, reconf_elapsed_sec))
 
                     # AS Core処理時間 = reconf開始時間 - RA開始時間
+                    reconf_start_date = val["reconf"]["start_time"]
                     as_elapsed_sec = self.workflow_elapsed_sec(
                         reconf_start_date, ra_start_date
                     )
@@ -230,8 +221,12 @@ class CwlMetrics:
                         "as_elapsed_sec"
                     ] = as_elapsed_sec
 
+                    hit["_source"]["steps"][step_name][
+                        "reconf_elapsed_sec"
+                    ] = as_elapsed_sec + ra_elapsed_sec
+
                     # グラフ用総reconf時間
-                    total_reconf_elapsed_sec += reconf_elapsed_sec
+                    total_reconf_elapsed_sec += (as_elapsed_sec + ra_elapsed_sec)
 
             # 完成したworkflow 保存
             hit["_source"]["total_reconf_elapsed_sec"] = total_reconf_elapsed_sec
