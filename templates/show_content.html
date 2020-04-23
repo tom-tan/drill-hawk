@@ -86,7 +86,7 @@
                 {% if step.step_name[0] != '_' %}
                 <div class="ra_cost_time"> <span class="small_font">TOTAL:</span>
                   {{ '{:,}'.format(step.step_elapsed_sec) }} sec</div>
-                {{ step.start_date }}<br>{{ step.end_date }}
+                {{ step.container.process.start_time }}<br>{{ step.container.process.end_time }}
                 {% endif %}
               </td>
               <td>
