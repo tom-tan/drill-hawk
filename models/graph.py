@@ -84,8 +84,8 @@ class Graph:
             #
 
             # step 当たりの経過時間
-            start_date = step_keys["start_date"]
-            end_date = step_keys["end_date"]
+            start_date = step_keys["container"]["process"]["start_time"]
+            end_date = step_keys["container"]["process"]["end_time"]
             workflow_elapsed_sec = self.cwl_.workflow_elapsed_sec(start_date, end_date)
 
             d3_workflow["itype-{}".format(step_name_without_no)] = instance_type

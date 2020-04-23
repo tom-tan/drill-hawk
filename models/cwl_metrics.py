@@ -174,8 +174,8 @@ class CwlMetrics:
             )
             hit["_source"]["steps"] = steps_sorted
             for step_name, val in steps_sorted.items():
-                start_date = val["start_date"]
-                end_date = val["end_date"]
+                start_date = val["container"]["process"]["start_time"]
+                end_date = val["container"]["process"]["end_time"]
                 step_elapsed_sec = self.workflow_elapsed_sec(start_date, end_date)
                 hit["_source"]["steps"][step_name][
                     "step_elapsed_sec"
