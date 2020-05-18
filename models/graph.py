@@ -22,7 +22,7 @@ class Graph:
             self.graph_name = "Elapsed Time"
             self.graph_unit = "sec"
             self.graph_sym = "time"
-            other = {"graph_name": "UserFee", "graph_type": "usage_fee"}
+            other = {"graph_name": "Usage Fee", "graph_type": "usage_fee"}
             self.other = other
         else:
             self.graph_name = "Usage Fee"
