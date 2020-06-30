@@ -30,7 +30,7 @@ if "ES_INDEX_NAME" in os.environ:
 
 def url_for_static(filename):
     root = app.config.get("STATIC_ROOT", "")
-    return ''.join(root, filename)
+    return "".join(root, filename)
 
 
 @app.route("/")
@@ -109,12 +109,21 @@ def show_content():
 
     # total_keys を tool_id でuniq
     total_keys_with_number = sorted(graph.total_keys)
+
     total_keys = []
     for k in total_keys_with_number:
         key_name = k[3:]
         if key_name not in total_keys:
             total_keys.append(key_name)
 
+    # cost, time のそれぞれのグラフに表示するキーを抽出
+    cost_total_keys = []
+    time_total_keys = []
+    for key in total_keys:
+        if "cost" in key:
+            cost_total_keys.append(key)
+        elif "time" in key:
+            time_total_keys.append(key)
     # toggle url
     toggle_url = "./show?type={}&workflow_id={}".format(
         graph.other["graph_type"], workflow_ids
@@ -128,7 +137,8 @@ def show_content():
         graph_other_url=toggle_url,
         contents=graph.workflows,
         data=json_data,
-        keys=str(total_keys),
+        cost_keys=str(cost_total_keys),
+        time_keys=str(time_total_keys),
     )
 
 

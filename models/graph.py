@@ -108,12 +108,13 @@ class Graph:
             d3_workflow["end-{}".format(step_name_without_no)] = end_date
 
             # グラフ出力する項目名の設定
-            key_name = "{}-{}".format(self.graph_sym, step_name_without_no)
+            for sym in ["time", "cost"]:
+                key_name = "{}-{}".format(sym, step_name_without_no)
 
-            if key_name not in self.total_keys:
-                # keyは複数のworkflowのstep名のuniqリスト
-                # 00-tool_id
-                self.total_keys.append("{:02d}-{}".format(step_no, key_name))
+                if key_name not in self.total_keys:
+                    # keyは複数のworkflowのstep名のuniqリスト
+                    # 00-tool_id
+                    self.total_keys.append("{:02d}-{}".format(step_no, key_name))
             step_no += 1
 
             # 表用
@@ -129,7 +130,8 @@ class Graph:
         d3_workflow["start-{}".format(name)] = ""
         d3_workflow["end-{}".format(name)] = ""
         # グラフ出力する項目名の設定
-        self.total_keys.insert(0, "{:02d}-{}-{}".format(2, self.graph_sym, name))
+        for sym in ["time", "cost"]:
+            self.total_keys.insert(0, "{:02d}-{}-{}".format(2, sym, name))
         steps.insert(0, self.null_metrics(name))
 
         #
@@ -141,7 +143,9 @@ class Graph:
         d3_workflow["cost-{}".format(name)] = 0
         d3_workflow["start-{}".format(name)] = ""
         d3_workflow["end-{}".format(name)] = ""
-        self.total_keys.insert(0, "{:02d}-{}-{}".format(1, self.graph_sym, name))
+
+        for sym in ["time", "cost"]:
+            self.total_keys.insert(0, "{:02d}-{}-{}".format(1, sym, name))
         steps.insert(0, self.null_metrics(name))
 
         #
