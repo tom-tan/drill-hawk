@@ -1,0 +1,3 @@
+# 設定のサンプル
+plugins:
+  - reconf.reconf_plugin

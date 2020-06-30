@@ -163,6 +163,8 @@ class Graph:
         return
 
     def null_metrics(self, stepname):
+        """ テスト用のデータ
+        """
         return {
             "start_date": "",
             "end_date": "",
