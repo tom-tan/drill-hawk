@@ -1,4 +1,5 @@
 from datetime import datetime
+import sys
 
 
 class ASRAFetch(object):
@@ -25,6 +26,7 @@ class ASRAFetch(object):
         return int(workflow_elapsed_sec)
 
     # TODO: applyはpythonの予約後? 調査する pandadでもapplyは使われているが、
+    # TODO; workflow_dataに対するデータ加工なのでgraph.buildに移すのが良さそう(2つに分ける意味が有るか?)
     def build(self, cwl_workflow_data):
         """ AS, RAの処理時間の情報を計算して、cwl_workflow_dataに格納する
         :return: 情報追加した cwl_workflow_data
@@ -103,13 +105,15 @@ class ASRAFetch(object):
         return cwl_workflow_data
 
 
-# CREST: table
+# CREST: table VIEW?
 # TODO: ベーククラスの定義
 class ASRATable(object):
     def __init__(self):
         pass
 
-    def apply(self, workflow_data, table_data):
+    def build(self, workflow_data, table_data):
+        # JSONをもとにテーブルを書くようにする
+        # JSONの値は、HTMLになっている
         # (TODO: データタイプを定義する)
         # TODO: HTMLを出力するのはセルに複数の値を入れることが有るため
         # データを一気に出力形式に変換するのかは微妙。(データ加工と、表現を分けるか)
@@ -127,14 +131,74 @@ class ASRAGraph(object):
     def __init__(self):
         pass
 
-    def apply(self, workflow_data, graph_data):
+    def build(self, graph_sym, workflow_data, graph_data, steps, total_keys):
         # TODO: telegrafのデータを集計したいときはここでする?
         # TODO: workflow_data, graph_dataともに全体を示すことを仮定する
         # TODO: 巨大なデータを扱うときにどうするか?(データベースを介して加工するとか?)
         """ グラフのデータを加工し、加工後のデータを返す。
         """
-        # TODO: ASRAでは左橋に時間隠るようにする
-        return graph_data
+        print("ASRA graph build", file=sys.stderr)
+        wf = workflow_data["workflow"]
+
+        graph_data["prepare_elapsed_sec"] = wf["prepare_elapsed_sec"]
+        graph_data["total_reconf_elapsed_sec"] = workflow_data["total_reconf_elapsed_sec"]
+
+        #
+        # reconf合計 stepを追加する
+        #
+        name = "_total_reconf"
+        graph_data["id-{}".format(name)] = "{}-01".format(name)
+        graph_data["time-{}".format(name)] = workflow_data["total_reconf_elapsed_sec"]
+        graph_data["cost-{}".format(name)] = 0
+        graph_data["start-{}".format(name)] = ""
+        graph_data["end-{}".format(name)] = ""
+        # グラフ出力する項目名の設定
+        total_keys.insert(0, "{:02d}-{}-{}".format(2, graph_sym, name))
+        steps.insert(0, self.__null_metrics(name))
+
+        #
+        # prepare stepを追加する
+        #
+        name = "_prepare"
+        graph_data["id-{}".format(name)] = "{}-01".format(name)
+        graph_data["time-{}".format(name)] = wf["prepare_elapsed_sec"]
+        graph_data["cost-{}".format(name)] = 0
+        graph_data["start-{}".format(name)] = ""
+        graph_data["end-{}".format(name)] = ""
+        total_keys.insert(0, "{:02d}-{}-{}".format(1, graph_sym, name))
+        steps.insert(0, self.__null_metrics(name))
+
+        return (graph_data, steps, total_keys)
+
+    def __null_metrics(self, stepname):
+        return {
+            "start_date": "",
+            "end_date": "",
+            "container": {
+                "process": {
+                    "image": "",
+                    "start_time": "",
+                    "end_time": "",
+                    "exit_code": 0,
+                    "id": stepname,
+                    "cmd": None,
+                    "status": None,
+                }
+            },
+            "stepname": stepname,
+            "step_name": stepname,
+            "tool_status": "ok",
+            "cwl_file": stepname,
+            "platform": {
+                "hostname": "",
+                "total_memory": 0,
+                "ec2_instance_type": "",
+                "disk_size": None,
+                "ncpu_cores": 0,
+                "ec2_ami_id": None,
+                "ec2_region": "",
+            },
+        }
 
 
 # TODO コードを移動

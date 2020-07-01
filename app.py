@@ -10,12 +10,14 @@ from models.cwl_metrics import CwlMetrics
 from models.graph import Graph
 import os
 import json
+from plugins import loader
 
 #
 # Flask Initialize
 #
 app = Flask(__name__, static_url_path="/dh")
 app.config["DEBUG"] = True
+plugins = []
 
 #
 # load configure
@@ -60,7 +62,7 @@ def workflows():
     #
     # ElasticSearchから検索対象のworkflowを抽出
     #
-    cwl = CwlMetrics(_config["es_endpoint"], _config["es_index_name"])
+    cwl = CwlMetrics(_config["es_endpoint"], _config["es_index_name"], plugins)
     recs = cwl.search(from_date, to_date, list(set([keyword1, keyword2, keyword3])))
 
     return render_template(
@@ -87,22 +89,28 @@ def show_content():
     graph_type = request.args.get("type")
 
     # cwl metrics 初期化
-    cwl = CwlMetrics(_config["es_endpoint"], _config["es_index_name"])
-
+    cwl = CwlMetrics(_config["es_endpoint"], _config["es_index_name"], plugins)
     # graph data モデル初期化
-    graph = Graph(cwl, graph_type)
+    graph = Graph(cwl, graph_type, plugins)
+
     for workflow_id in list(set(workflow_ids.split(","))):
         #
         # ElasticSearch から指定workflowの情報を抽出
         #
-        res = cwl.search_simple(workflow_id)  # workflow_id = workflow.cwl_file
-        if res is None:
+        # workflow_id = workflow.cwl_file
+        workflow_data = cwl.search_simple(workflow_id)
+        app.logger.debug("workflow_data: {}".format(workflow_data))
+        if workflow_data is None:
             continue
 
         #
         # cwl-metrics形式jsonから、workflow 表示用モデルを構築する
         #
-        graph.build(res)
+        graph.build(workflow_data)
+        # TODO; graphの処理をplugin化する?
+        # for plugin in plugins:
+        # TODO:　データ加工というクラス名にする, fetchと重複する部分が有る
+        # plugins.graph.build(graph.data,)
 
     # json形式に変換
     json_data = json.dumps(graph.data, ensure_ascii=False, indent=4, sort_keys=True)
@@ -119,6 +127,8 @@ def show_content():
     toggle_url = "./show?type={}&workflow_id={}".format(
         graph.other["graph_type"], workflow_ids
     )
+
+    app.logger.debug("contents: {}".format(graph.workflows))
     return render_template(
         "show_content.html",
         graph_type=graph_type,
@@ -133,6 +143,6 @@ def show_content():
 
 
 if __name__ == "__main__":
-
-    # サーバーの起動
+    # TODO: config
+    plugins = loader.load("./dh_config.yml")
     app.run(host="0.0.0.0")

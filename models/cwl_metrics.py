@@ -5,13 +5,13 @@
 from elasticsearch import Elasticsearch
 from datetime import datetime
 import json
-from plugins import loader
 
 
 class CwlMetrics:
     def __init__(self,
                  elastic_search_endpoint,
                  index_name,
+                 plugins,
                  cells=None):
         #
         # 検索対象のindex名
@@ -25,8 +25,6 @@ class CwlMetrics:
             ]
         else:
             self.cells = cells
-        self.plugins = loader.load("./dh_config.yml")
-
         #
         # generate query
         #
@@ -45,7 +43,7 @@ class CwlMetrics:
             "steps.*.platform.*",
             "steps.*.container.process.*",
         ]
-
+        self.plugins = plugins
         for plugin in self.plugins:
             self.source.extend(plugin.fetch.get_es_source())
 
@@ -204,6 +202,7 @@ class CwlMetrics:
         for plugin in self.plugins:
             # TODO: pluginメソッド名見直し
             cwl_workflow_data = plugin.fetch.build(cwl_workflow_data)
+
         # TODO: for each plugin
         # debug code
         with open("es.json", "w") as f:
