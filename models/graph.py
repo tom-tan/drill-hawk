@@ -42,6 +42,7 @@ class Graph:
 
         self.data = []
         self.total_keys = []
+        # table描画用のデータ
         self.workflows = []
         self.plugins = plugins
 

@@ -112,6 +112,16 @@ def show_content():
         # TODO:　データ加工というクラス名にする, fetchと重複する部分が有る
         # plugins.graph.build(graph.data,)
 
+    workflows = []
+    for workflow_table_data in graph.workflows:
+        # pn(...(p3(p2(p1(w)))))
+        workflow_table_data["ext_columns"] = []
+        for plugin in plugins:
+            workflow_table_data = plugin.table.build(workflow_table_data)
+        workflows.append(workflow_table_data)
+
+    app.logger.debug("worfkflows: {}".format(workflows))
+
     # json形式に変換
     json_data = json.dumps(graph.data, ensure_ascii=False, indent=4, sort_keys=True)
 
@@ -128,7 +138,6 @@ def show_content():
         graph.other["graph_type"], workflow_ids
     )
 
-    app.logger.debug("contents: {}".format(graph.workflows))
     return render_template(
         "show_content.html",
         graph_type=graph_type,
@@ -136,7 +145,7 @@ def show_content():
         graph_unit=graph.graph_unit,
         graph_other=graph.other,
         graph_other_url=toggle_url,
-        contents=graph.workflows,
+        contents=workflows,
         data=json_data,
         keys=str(total_keys),
     )

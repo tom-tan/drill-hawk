@@ -1,5 +1,27 @@
 from datetime import datetime
-import sys
+# import sys
+# from flask import render_template
+from jinja2 import Environment, BaseLoader
+
+reconf_cell_template = """
+{% if step.step_name[0] != '_' %}
+<div class="ra_cost_time">
+<span class="small_font">TOTAL:</span>
+{{ '{:,}'.format(step.reconf_elapsed_sec) }} sec
+        </div>
+<span class="ra_cost_time">(<span class="small_font">AS:</span>
+{{ '{:,}'.format(step.as_elapsed_sec) }} sec
+/ <span class="small_font">RA:</span>
+{{ '{:,}'.format(step.ra_elapsed_sec) }} sec)</span>
+{% elif step.step_name == '_prepare' %}
+<span class="ra_cost_time"> <span class="small_font">TOTAL:</span>
+{{ '{:,}'.format(content.prepare_elapsed_sec) }} sec</span>
+{% else %}
+<span class="ra_cost_time"> <span class="small_font">TOTAL:</span>
+{{ '{:,}'.format(content.total_reconf_elapsed_sec) }} sec</span>
+{% endif %}
+"""
+jinja2_env = Environment(loader=BaseLoader())
 
 
 class ASRAFetch(object):
@@ -111,7 +133,7 @@ class ASRATable(object):
     def __init__(self):
         pass
 
-    def build(self, workflow_data, table_data):
+    def build(self, workflow_table_data):
         # JSONをもとにテーブルを書くようにする
         # JSONの値は、HTMLになっている
         # (TODO: データタイプを定義する)
@@ -122,7 +144,19 @@ class ASRATable(object):
         # TODO: データの取得(必要な場合)は別にしたほうが良さそう
         """ テーブルのセルを加工し、HTML(要検討)を出力する
         """
-        return table_data
+        # 1. as, raの行の加工
+        # 2. 列を追加
+
+        # reconfigure cost column
+        # TODO: 条件の見直し {% if step.step_name[0] != '_' %}
+        # title, cells
+        column_name = "reconfigure cost"
+        workflow_table_data["ext_columns"].append(column_name)
+        template = jinja2_env.from_string(reconf_cell_template)
+        for step in workflow_table_data["steps"]:
+            step[column_name] = template.render(step=step, content=workflow_table_data)
+
+        return workflow_table_data
 
 
 # CREST: graph
@@ -137,7 +171,6 @@ class ASRAGraph(object):
         # TODO: 巨大なデータを扱うときにどうするか?(データベースを介して加工するとか?)
         """ グラフのデータを加工し、加工後のデータを返す。
         """
-        print("ASRA graph build", file=sys.stderr)
         wf = workflow_data["workflow"]
 
         graph_data["prepare_elapsed_sec"] = wf["prepare_elapsed_sec"]
