@@ -9,6 +9,8 @@ def load(dh_config_file):
 
     # TODO: 順番を表とグラフで異なるように制御したい?
     plugin_path_list = dh_config["plugins"]
+    if plugin_path_list is None:
+        plugin_path_list = []
     plugin_list = []
     for plugin_path in plugin_path_list:
         m = importlib.import_module("plugins.{}".format(plugin_path))
