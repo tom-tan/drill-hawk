@@ -125,18 +125,21 @@ class Graph:
             d3_workflow["start-{}".format(step_name_without_no)] = start_date
             d3_workflow["end-{}".format(step_name_without_no)] = end_date
 
-            # グラフ出力する項目名の設定
-            key_name = "{}-{}".format(self.graph_sym, step_name_without_no)
             # key_name graph_sym, step_name
-            if key_name not in self.total_keys:
-                # keyは複数のworkflowのstep名のuniqリスト
-                # 00-tool_id
-                self.total_keys.append("{:02d}-{}".format(step_no, key_name))
+            # TODO: cost, timeを同じにする?
+            for graph_sym in ["time", "cost"]:
+                key_name = "{}-{}".format(graph_sym, step_name_without_no)
+
+                if key_name not in self.total_keys:
+                    # keyは複数のworkflowのstep名のuniqリスト
+                    # 00-tool_id
+                    self.total_keys.append("{:02d}-{}".format(step_no, key_name))
             step_no += 1
 
             # 表用
             steps.append(step_keys)
 
+        # self.total_keys
         total_keys = self.total_keys
         for plugin in self.plugins:
             (d3_workflow, step, total_keys) = plugin.graph.build(self.graph_sym, workflow_data, d3_workflow, steps, total_keys)
