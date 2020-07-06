@@ -1,4 +1,5 @@
 from datetime import datetime
+
 # import sys
 # from flask import render_template
 from jinja2 import Environment, BaseLoader
@@ -59,7 +60,7 @@ class ASRAFetch(base.DHFetchPlugin):
         # TODO: HTMLを出力するのはセルに複数の値を入れることが有るため
         # データを一気に出力形式に変換するのかは微妙。(データ加工と、表現を分けるか)
         # AS/RAの場合はフェッチしたデータに必要な情報が入っているが
-        # 入っていない場合は、ここで? フェッチしてSQL JOINのようなことをする。　
+        # 入っていない場合は、ここで? フェッチしてSQL JOINのようなことをする。
         # TODO: データの取得(必要な場合)は別にしたほうが良さそう
         # 副作用を起こしつつ、起こしたデータを返す
         """ テーブルのセルを加工し、HTML(要検討)を出力する
@@ -100,28 +101,22 @@ class ASRAFetch(base.DHFetchPlugin):
                 # RA 時間
                 ra_start_date = val["reconf"]["ra"]["start_time"]
                 ra_end_date = val["reconf"]["ra"]["end_time"]
-                ra_elapsed_sec = self.workflow_elapsed_sec(
-                    ra_start_date, ra_end_date
-                )
-                cwl_workflow_data["steps"][step_name][
-                    "ra_elapsed_sec"
-                ] = ra_elapsed_sec
+                ra_elapsed_sec = self.workflow_elapsed_sec(ra_start_date, ra_end_date)
+                cwl_workflow_data["steps"][step_name]["ra_elapsed_sec"] = ra_elapsed_sec
 
                 # AS Core処理時間 = reconf開始時間 - RA開始時間
                 reconf_start_date = val["reconf"]["start_time"]
                 as_elapsed_sec = self.workflow_elapsed_sec(
                     reconf_start_date, ra_start_date
                 )
-                cwl_workflow_data["steps"][step_name][
-                    "as_elapsed_sec"
-                ] = as_elapsed_sec
+                cwl_workflow_data["steps"][step_name]["as_elapsed_sec"] = as_elapsed_sec
 
-                cwl_workflow_data["steps"][step_name][
-                    "reconf_elapsed_sec"
-                ] = as_elapsed_sec + ra_elapsed_sec
+                cwl_workflow_data["steps"][step_name]["reconf_elapsed_sec"] = (
+                    as_elapsed_sec + ra_elapsed_sec
+                )
 
                 # グラフ用総reconf時間
-                total_reconf_elapsed_sec += (as_elapsed_sec + ra_elapsed_sec)
+                total_reconf_elapsed_sec += as_elapsed_sec + ra_elapsed_sec
 
             # 完成したworkflow 保存
             cwl_workflow_data["total_reconf_elapsed_sec"] = total_reconf_elapsed_sec
@@ -129,8 +124,6 @@ class ASRAFetch(base.DHFetchPlugin):
         return cwl_workflow_data
 
 
-# CREST: table VIEW?
-# TODO: ベーククラスの定義
 class ASRATable(base.DHTablePlugin):
     def __init__(self):
         pass
@@ -141,7 +134,7 @@ class ASRATable(base.DHTablePlugin):
         # TODO: HTMLを出力するのはセルに複数の値を入れることが有るため
         # データを一気に出力形式に変換するのかは微妙。(データ加工と、表現を分けるか)
         # AS/RAの場合はフェッチしたデータに必要な情報が入っているが
-        # 入っていない場合は、ここで? フェッチしてSQL JOINのようなことをする。　
+        # 入っていない場合は、ここで? フェッチしてSQL JOINのようなことをする。
         # TODO: データの取得(必要な場合)は別にしたほうが良さそう
         # 1. as, raの行の加工
         # 2. 列を追加
@@ -159,7 +152,6 @@ class ASRATable(base.DHTablePlugin):
 
 
 # CREST: graph
-# TODO: ベーククラスの定義
 class ASRAGraph(base.DHGraphPlugin):
     def __init__(self):
         pass
@@ -178,7 +170,9 @@ class ASRAGraph(base.DHGraphPlugin):
         wf = workflow_data["workflow"]
 
         graph_data["prepare_elapsed_sec"] = wf["prepare_elapsed_sec"]
-        graph_data["total_reconf_elapsed_sec"] = workflow_data["total_reconf_elapsed_sec"]
+        graph_data["total_reconf_elapsed_sec"] = workflow_data[
+            "total_reconf_elapsed_sec"
+        ]
 
         #
         # reconf合計 stepを追加する
@@ -242,8 +236,5 @@ class ASRAGraph(base.DHGraphPlugin):
 
 # TODO: プラグインの初期化時に設定値などを渡す仕組み? 案: dictにして渡す?
 def create_plugin(*args, **kwargs):
-    plugin = base.DHPlugin(
-        fetch=ASRAFetch(),
-        table=ASRATable(),
-        graph=ASRAGraph())
+    plugin = base.DHPlugin(fetch=ASRAFetch(), table=ASRATable(), graph=ASRAGraph())
     return plugin

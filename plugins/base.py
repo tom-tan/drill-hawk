@@ -1,3 +1,4 @@
+# TODO: overrideデコレータを定義
 
 
 class DHFetchPlugin(object):
@@ -41,13 +42,13 @@ class DHTablePlugin(object):
         """
         raise NotImplementedError()
 
+
 # TODO: 空のプラグインを追加してNoneが来たときにそれをセットする?
 # 暫定版
 class DHPlugin(object):
-    def __init__(self,
-                 fetch=None,  # DHFetchPlugin
-                 table=None,  # DHTablePlugin
-                 graph=None):  # DHGraphPlugin
+    def __init__(
+        self, fetch=None, table=None, graph=None  # DHFetchPlugin  # DHTablePlugin
+    ):  # DHGraphPlugin
         self.fetch = fetch
         self.table = table
         self.graph = graph

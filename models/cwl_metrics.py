@@ -8,11 +8,7 @@ import json
 
 
 class CwlMetrics:
-    def __init__(self,
-                 elastic_search_endpoint,
-                 index_name,
-                 plugins,
-                 cells=None):
+    def __init__(self, elastic_search_endpoint, index_name, plugins, cells=None):
         #
         # 検索対象のindex名
         #
@@ -179,10 +175,7 @@ class CwlMetrics:
             return None
 
         steps_sorted = dict(
-            sorted(
-                cwl_workflow_data["steps"].items(),
-                key=lambda x: x[0].split("-")[1]
-            )
+            sorted(cwl_workflow_data["steps"].items(), key=lambda x: x[0].split("-")[1])
         )
         cwl_workflow_data["steps"] = steps_sorted
 
@@ -195,9 +188,7 @@ class CwlMetrics:
             start_date = val["container"]["process"]["start_time"]
             end_date = val["container"]["process"]["end_time"]
             step_elapsed_sec = self.workflow_elapsed_sec(start_date, end_date)
-            cwl_workflow_data["steps"][step_name][
-                "step_elapsed_sec"
-            ] = step_elapsed_sec
+            cwl_workflow_data["steps"][step_name]["step_elapsed_sec"] = step_elapsed_sec
 
         for plugin in self.plugins:
             # TODO: pluginメソッド名見直し

@@ -86,11 +86,13 @@ def show_content():
     # ElasticSearchから検索対象のworkflowを抽出
     #
     workflow_ids = request.args.get("workflow_id")
+    # TODO: graph_typeを削除
     graph_type = request.args.get("type")
 
     # cwl metrics 初期化
     cwl = CwlMetrics(_config["es_endpoint"], _config["es_index_name"], plugins)
     # graph data モデル初期化
+    # TODO: graph_typeを削除
     graph = Graph(cwl, graph_type, plugins)
 
     for workflow_id in list(set(workflow_ids.split(","))):
@@ -99,7 +101,7 @@ def show_content():
         #
         # workflow_id = workflow.cwl_file
         workflow_data = cwl.search_simple(workflow_id)
-        app.logger.debug("workflow_data: {}".format(workflow_data))
+        # app.logger.debug("workflow_data: {}".format(workflow_data))
         if workflow_data is None:
             continue
 
@@ -107,7 +109,7 @@ def show_content():
         # cwl-metrics形式jsonから、workflow 表示用モデルを構築する
         #
         graph.build(workflow_data)
-        # TODO; graphの処理をplugin化する?
+        # TODO; graph内部でpluginの処理を適用するようにしたが、外に出すのが良いか?
         # for plugin in plugins:
         # TODO:　データ加工というクラス名にする, fetchと重複する部分が有る
         # plugins.graph.build(graph.data,)
@@ -120,7 +122,7 @@ def show_content():
             workflow_table_data = plugin.table.build(workflow_table_data)
         workflows.append(workflow_table_data)
 
-    app.logger.debug("worfkflows: {}".format(workflows))
+    # app.logger.debug("worfkflows: {}".format(workflows))
 
     # json形式に変換
     json_data = json.dumps(graph.data, ensure_ascii=False, indent=4, sort_keys=True)
@@ -134,6 +136,7 @@ def show_content():
         if key_name not in total_keys:
             total_keys.append(key_name)
 
+    # TODO: pluginとのやり取りを決める(現状、time, costキー)
     # cost, time のそれぞれのグラフに表示するキーを抽出
     cost_total_keys = []
     time_total_keys = []
@@ -142,6 +145,8 @@ def show_content():
             cost_total_keys.append(key)
         elif "time" in key:
             time_total_keys.append(key)
+
+    # TODO: グラフを2つ並べたため不要?
     # toggle url
     toggle_url = "./show?type={}&workflow_id={}".format(
         graph.other["graph_type"], workflow_ids
@@ -149,11 +154,15 @@ def show_content():
 
     return render_template(
         "show_content.html",
+        # TODO: 両方出すから不要?
         graph_type=graph_type,
         graph_name=graph.graph_name,
         graph_unit=graph.graph_unit,
+        # TODO: 両方出すから不要?
         graph_other=graph.other,
+        # TODO: 両方出すから不要?
         graph_other_url=toggle_url,
+        # TODO: contentsをworkflowsまたはtable_dataにリネームしてはどうか?
         contents=workflows,
         data=json_data,
         cost_keys=str(cost_total_keys),
