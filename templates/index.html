@@ -50,15 +50,9 @@
 
   <div class="form-inline">
     <div class="form-group mb-2">
-      <div class="dropdown">
-        <button class="btn btn-secondary dropdown-toggle btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Workflows Operation
-        </button>
-        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <a class="dropdown-item" id="act_elapsed_time" act="elapsed_time">Elapsed Time</a>
-          <a class="dropdown-item" id="act_usage_fee" act="usage_fee">Usage Fee</a>
-        </div>
-      </div>
+      <button class="btn btn-secondary btn-sm" type="button" id="act_show">
+        Workflows Operation
+      </button>
       <div class="form-group mx-sm-3 mb-2">
         <div class="form-check">
           <input type="checkbox" value="1" class="form-check-input" id="nocheck_list_hidden">
@@ -185,14 +179,7 @@ $(function(){
   });
 
   // workflow list checkbox operation
-  $("#act_elapsed_time,#act_usage_fee").on("click", function(event) {
-    var act;
-    if (this.id == 'act_elapsed_time') {
-      act = 'elapsed_time';
-    } else {
-      act = 'usage_fee';
-    }
-
+  $("#act_show").on("click", function(event) {
     // checked workflow pickup
     var checklist = [];
     $('input[name="workflow_check[]"]:checked').each(function() {
@@ -200,7 +187,7 @@ $(function(){
     });
     if (checklist.length > 0) {
       // move to graph
-      url = './show?type=' + act + '&workflow_id='+checklist;
+      url = './show' + '?workflow_id='+checklist;
       window.open(url, '_blank');
     }
     return true;

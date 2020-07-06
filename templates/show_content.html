@@ -11,7 +11,6 @@
     </a>
     <a class="nav-item nav-link" href="./">Home </a>
     <!-- <a class="nav-item nav-link active" href="#">{{ graph_name }} <span class="sr-only">(current)</span></a> -->
-    <a class="nav-item nav-link" href="{{ graph_other_url }}">{{ graph_other['graph_name'] }}</a>
 </nav>
 
 <div class="container-fluid">
@@ -19,11 +18,26 @@
     <table id="list" class="table table-sm">
     <thead class="thead-dark">
       <tr>
-        <th scope="col">{{ graph_name }} workflow(s)</th>
+        <th scope="col">workflow(s)</th>
       </tr>
     </thead>
 
     <tbody>
+
+    <tr>
+      <td>
+        <ul>
+          <li>
+            <a href="#elapsed_time">Elapsed Time </a>
+          </li>
+          <li>
+            <a href="#usage_fee">Usage Fee </a>
+          </li>
+        </il>
+      </td>
+
+    </tr>
+    </tr>
     {% for content in contents %}
       <tr class="workflow" id="workflow-{{ content.workflow_id }}">
         <td>
