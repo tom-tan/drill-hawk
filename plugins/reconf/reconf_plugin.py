@@ -136,7 +136,6 @@ class ASRATable(base.DHTablePlugin):
         pass
 
     def build(self, workflow_table_data):
-        # JSONをもとにテーブルを書くようにする
         # JSONの値は、HTMLになっている
         # (TODO: データタイプを定義する)
         # TODO: HTMLを出力するのはセルに複数の値を入れることが有るため
@@ -144,8 +143,6 @@ class ASRATable(base.DHTablePlugin):
         # AS/RAの場合はフェッチしたデータに必要な情報が入っているが
         # 入っていない場合は、ここで? フェッチしてSQL JOINのようなことをする。　
         # TODO: データの取得(必要な場合)は別にしたほうが良さそう
-        """ テーブルのセルを加工し、HTML(要検討)を出力する
-        """
         # 1. as, raの行の加工
         # 2. 列を追加
 
@@ -167,10 +164,11 @@ class ASRAGraph(base.DHGraphPlugin):
     def __init__(self):
         pass
 
+    # TODO: telegrafのデータを集計したいときはここでする?
+    # TODO: workflow_data, graph_dataともに全体を示すことを仮定する
+    # TODO: 巨大なデータを扱うときにどうするか?(データベースを介して加工するとか?)
+    # TODO: graph_symについて検討
     def build(self, graph_sym, workflow_data, graph_data, steps, total_keys):
-        # TODO: telegrafのデータを集計したいときはここでする?
-        # TODO: workflow_data, graph_dataともに全体を示すことを仮定する
-        # TODO: 巨大なデータを扱うときにどうするか?(データベースを介して加工するとか?)
         """ グラフのデータをreconf情報をつけて加工し、加工後のデータを返す。
 
         * prepareとreconfにかかった時間
@@ -192,7 +190,8 @@ class ASRAGraph(base.DHGraphPlugin):
         graph_data["start-{}".format(name)] = ""
         graph_data["end-{}".format(name)] = ""
         # グラフ出力する項目名の設定
-        total_keys.insert(0, "{:02d}-{}-{}".format(2, graph_sym, name))
+        for graph_sym in ["cost", "time"]:
+            total_keys.insert(0, "{:02d}-{}-{}".format(2, graph_sym, name))
         steps.insert(0, self.__null_metrics(name))
 
         #
@@ -204,7 +203,8 @@ class ASRAGraph(base.DHGraphPlugin):
         graph_data["cost-{}".format(name)] = 0
         graph_data["start-{}".format(name)] = ""
         graph_data["end-{}".format(name)] = ""
-        total_keys.insert(0, "{:02d}-{}-{}".format(1, graph_sym, name))
+        for graph_sym in ["cost", "time"]:
+            total_keys.insert(0, "{:02d}-{}-{}".format(1, graph_sym, name))
         steps.insert(0, self.__null_metrics(name))
 
         return (graph_data, steps, total_keys)
