@@ -2,6 +2,7 @@ from datetime import datetime
 # import sys
 # from flask import render_template
 from jinja2 import Environment, BaseLoader
+from plugins import base
 
 reconf_cell_template = """
 {% if step.step_name[0] != '_' %}
@@ -24,7 +25,7 @@ reconf_cell_template = """
 jinja2_env = Environment(loader=BaseLoader())
 
 
-class ASRAFetch(object):
+class ASRAFetch(base.DHFetchPlugin):
     def __init__(self):
         pass
 
@@ -37,6 +38,7 @@ class ASRAFetch(object):
             "steps.*.reconf.*",
         ]
 
+    # TODO: util.pyを作成しそこに定義を移す
     def workflow_elapsed_sec(self, start_date, end_date):
         """
         end_data - start_date の秒数計算
@@ -129,7 +131,7 @@ class ASRAFetch(object):
 
 # CREST: table VIEW?
 # TODO: ベーククラスの定義
-class ASRATable(object):
+class ASRATable(base.DHTablePlugin):
     def __init__(self):
         pass
 
@@ -161,7 +163,7 @@ class ASRATable(object):
 
 # CREST: graph
 # TODO: ベーククラスの定義
-class ASRAGraph(object):
+class ASRAGraph(base.DHGraphPlugin):
     def __init__(self):
         pass
 
@@ -169,7 +171,11 @@ class ASRAGraph(object):
         # TODO: telegrafのデータを集計したいときはここでする?
         # TODO: workflow_data, graph_dataともに全体を示すことを仮定する
         # TODO: 巨大なデータを扱うときにどうするか?(データベースを介して加工するとか?)
-        """ グラフのデータを加工し、加工後のデータを返す。
+        """ グラフのデータをreconf情報をつけて加工し、加工後のデータを返す。
+
+        * prepareとreconfにかかった時間
+        * prepareにかかった時間
+        * reconfにかかった時間
         """
         wf = workflow_data["workflow"]
 
@@ -234,20 +240,9 @@ class ASRAGraph(object):
         }
 
 
-# TODO コードを移動
-class DHPlugin(object):
-    def __init__(self,
-                 fetch=None,
-                 table=None,
-                 graph=None):
-        self.fetch = fetch
-        self.table = table
-        self.graph = graph
-
-
 # TODO: プラグインの初期化時に設定値などを渡す仕組み? 案: dictにして渡す?
 def create_plugin(*args, **kwargs):
-    plugin = DHPlugin(
+    plugin = base.DHPlugin(
         fetch=ASRAFetch(),
         table=ASRATable(),
         graph=ASRAGraph())

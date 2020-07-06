@@ -152,6 +152,6 @@ def show_content():
 
 
 if __name__ == "__main__":
-    # TODO: config
+    # TODO: config path
     plugins = loader.load("./dh_config.yml")
     app.run(host="0.0.0.0")
