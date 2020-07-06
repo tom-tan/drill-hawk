@@ -11,7 +11,6 @@
     </a>
     <a class="nav-item nav-link" href="./">Home </a>
     <!-- <a class="nav-item nav-link active" href="#">{{ graph_name }} <span class="sr-only">(current)</span></a> -->
-    <a class="nav-item nav-link" href="{{ graph_other_url }}">{{ graph_other['graph_name'] }}</a>
 </nav>
 
 <div class="container-fluid">
@@ -19,11 +18,26 @@
     <table id="list" class="table table-sm">
     <thead class="thead-dark">
       <tr>
-        <th scope="col">{{ graph_name }} workflow(s)</th>
+        <th scope="col">workflow(s)</th>
       </tr>
     </thead>
 
     <tbody>
+
+    <tr>
+      <td>
+        <ul>
+          <li>
+            <a href="#elapsed_time">Elapsed Time </a>
+          </li>
+          <li>
+            <a href="#usage_fee">Usage Fee </a>
+          </li>
+        </il>
+      </td>
+
+    </tr>
+    </tr>
     {% for content in contents %}
       <tr class="workflow" id="workflow-{{ content.workflow_id }}">
         <td>
@@ -96,10 +110,24 @@
   </div>
 
   <!-- d3 グラフ領域 -->
-  <h5>{{ graph_name }}</h5>
-  <div id='gantt-bar'></div>
-  <div class='legend-div'></div>
+  <h2>
+    <a name="elapsed_time">Elapsed Time</a>
+    <a href="#elapsed_time"><sup>+</sup></a>
+  </h2>
+  <div id='time-gantt-bar'></div>
+  <div class='legend-div' id="time-gantt-bar-legend"></div>
   <span style="clear:left;"></span><br>
+
+  <!-- d3 グラフ領域 -->
+  <h2>
+    <a name="usage_fee">Usage Fee</a>
+    <a href="#usage_fee"><sup>+</sup></a>
+  </h2>
+  </h2>
+  <div id='cost-gantt-bar'></div>
+  <div class='legend-div' id="cost-gantt-bar-legend"></div>
+  <span style="clear:left;"></span><br>
+
 
   <div class="kibana_title">
     <span id="kibana_title">kibana frame</span>
@@ -120,14 +148,23 @@
   data =
   {{ data|safe }}
   ;
-  var {{graph_type }}_key =
-  {{ keys|safe }}
+  var time_key =
+  {{ time_keys|safe }}
+  ;
+  var cost_key =
+  {{ cost_keys|safe }}
   ;
   initStackedBarChart.draw({
     data: data,
-    key: {{ graph_type }}_key,
-    unit_string: '{{ graph_unit }}',
-    element: 'gantt-bar'
+    key: time_key,
+    unit_string: '{{ time_graph_unit }}',
+    element: 'time-gantt-bar'
+  });
+  initStackedBarChart.draw({
+    data: data,
+    key: cost_key,
+    unit_string: '{{ cost_graph_unit }}',
+    element: 'cost-gantt-bar'
   });
 
 $(function(){

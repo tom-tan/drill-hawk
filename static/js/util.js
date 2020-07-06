@@ -175,8 +175,9 @@ var initStackedBarChart = {
 
 function draw_legend (config) {
   var legendVals = config.key;
+
   var color = d3.scaleOrdinal(d3.schemeCategory20);
-  var svgLegned = d3.select(".legend-div").append("svg");  // 描画svg作成
+  var svgLegned = d3.select("#"+config.element+"-legend").append("svg");  // 描画svg作成
      
   var legend = svgLegned.selectAll('.legends')　// 凡例の領域作成
     .data(legendVals)
