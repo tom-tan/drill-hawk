@@ -8,7 +8,7 @@ import yaml
 
 
 class Graph:
-    def __init__(self, cwl, graph_type):
+    def __init__(self, cwl):
         # AWS Cost per a hour(ap-northeast-1)
         self.prices_ = []
         with open("prices.yml", "rb") as file:
@@ -18,20 +18,6 @@ class Graph:
             self.prices_ = prices["prices"]
 
         self.cwl_ = cwl
-        if graph_type == "elapsed_time":
-            self.graph_name = "Elapsed Time"
-            self.graph_unit = "sec"
-            self.graph_sym = "time"
-            other = {"graph_name": "Usage Fee", "graph_type": "usage_fee"}
-            self.other = other
-        else:
-            self.graph_name = "Usage Fee"
-            self.graph_unit = "usd"
-            self.graph_sym = "cost"
-            self.other_type = "elapsed_time"
-            other = {"graph_name": "Elapsed Time", "graph_type": "elapsed_time"}
-            self.other = other
-
         self.data = []
         self.total_keys = []
         self.workflows = []
@@ -69,9 +55,6 @@ class Graph:
             step_keys["step_name"] = step_name
 
             instance_type = step_keys["platform"]["ec2_instance_type"]
-
-            d3_workflow["ncpu_cores"] = step_keys["platform"]["ncpu_cores"]
-            d3_workflow["total_memory"] = step_keys["platform"]["total_memory"]
 
             # workflow_id shorting
             # converted_reconf_hisat2-6d6a34a6e1c711e880080210a3f1930c

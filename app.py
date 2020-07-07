@@ -84,13 +84,12 @@ def show_content():
     # ElasticSearchから検索対象のworkflowを抽出
     #
     workflow_ids = request.args.get("workflow_id")
-    graph_type = request.args.get("type")
 
     # cwl metrics 初期化
     cwl = CwlMetrics(_config["es_endpoint"], _config["es_index_name"])
 
     # graph data モデル初期化
-    graph = Graph(cwl, graph_type)
+    graph = Graph(cwl)
     for workflow_id in list(set(workflow_ids.split(","))):
         #
         # ElasticSearch から指定workflowの情報を抽出
@@ -124,17 +123,9 @@ def show_content():
             cost_total_keys.append(key)
         elif "time" in key:
             time_total_keys.append(key)
-    # toggle url
-    toggle_url = "./show?type={}&workflow_id={}".format(
-        graph.other["graph_type"], workflow_ids
-    )
+
     return render_template(
         "show_content.html",
-        graph_type=graph_type,
-        graph_name=graph.graph_name,
-        graph_unit=graph.graph_unit,
-        graph_other=graph.other,
-        graph_other_url=toggle_url,
         contents=graph.workflows,
         data=json_data,
         cost_keys=str(cost_total_keys),

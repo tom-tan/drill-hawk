@@ -246,9 +246,3 @@ class CwlMetrics:
         workflow_elapsed_sec = (end_timestamp - start_timestamp).total_seconds()
 
         return int(workflow_elapsed_sec)
-
-    def sort_step(self, steps):
-        """
-        stepのdictをstart_date順にsortする
-        """
-        return steps
