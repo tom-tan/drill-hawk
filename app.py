@@ -94,7 +94,6 @@ def show_content():
     cwl = CwlMetrics(_config["es_endpoint"], _config["es_index_name"], _plugins)
     # graph data モデル初期化
     # TODO: graph_typeを削除
-    app.logger.debug("workflow_data: {}".format(_plugins))
     graph = Graph(graph_type, _plugins)
 
     for workflow_id in list(set(workflow_ids.split(","))):

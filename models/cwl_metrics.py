@@ -9,6 +9,15 @@ import utils.dh_util as dh_util
 
 class CwlMetrics:
     def __init__(self, elastic_search_endpoint, index_name, plugins, cells=None):
+        # TODO: index_nameはworkflowデータの?
+        """ CwlMetricsを取得するクライアント
+
+        :param elastic_search_endpoint: ElasticSearchのエンドポイント(IPアドレス、ホスト名とポート番号を:で区切ったもの)
+        :param index_name: ElasticSearch上のindex名
+        :param plugins: Drill-Hawkのプラグインのリスト
+        :param cells: ElasticSearch上の検索対象のindex名
+        """
+
         #
         # 検索対象のindex名
         #
@@ -40,6 +49,8 @@ class CwlMetrics:
             "steps.*.container.process.*",
         ]
         self.plugins = plugins
+
+        # プラグインで取得したいデータをsourceに追加する
         for plugin in self.plugins:
             self.source.extend(plugin.fetch.get_es_source())
 
@@ -49,6 +60,7 @@ class CwlMetrics:
         # Elasticsearch index
         self.index_name = index_name
 
+    # TODO: 関数名にwith_condition をつける?
     def search(self, start_date, end_date, keywords):
         #
         # search workflow list by date, keywords
@@ -132,6 +144,7 @@ class CwlMetrics:
 
         return workflows
 
+    # TODO: simpleではなくby_workflow_id か workflowにする?
     def search_simple(self, workflow_id):
         #
         # get workflow
