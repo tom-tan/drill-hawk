@@ -160,7 +160,7 @@ class ASRAGraph(base.DHGraphPlugin):
     # TODO: workflow_data, graph_dataともに全体を示すことを仮定する
     # TODO: 巨大なデータを扱うときにどうするか?(データベースを介して加工するとか?)
     # TODO: graph_symについて検討
-    def build(self, graph_sym, workflow_data, graph_data, steps, total_keys):
+    def build(self, workflow_data, graph_data, steps, total_keys):
         """ グラフのデータをreconf情報をつけて加工し、加工後のデータを返す。
 
         * prepareとreconfにかかった時間

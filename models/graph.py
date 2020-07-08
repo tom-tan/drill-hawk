@@ -130,8 +130,9 @@ class Graph:
         # self.total_keys
         total_keys = self.total_keys
         for plugin in self.plugins:
+            # TODO: 現状、cost, time同時にbuildするがどうするのが良いか検討
             (d3_workflow, step, total_keys) = plugin.graph.build(
-                self.graph_sym, workflow_data, d3_workflow, steps, total_keys
+                workflow_data, d3_workflow, steps, total_keys
             )
             print("after d3_workflow {}".format(d3_workflow))
 
