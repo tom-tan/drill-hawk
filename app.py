@@ -17,7 +17,8 @@ from plugins import loader
 #
 app = Flask(__name__, static_url_path="/dh")
 app.config["DEBUG"] = True
-plugins = []
+# TODO: flaskのcontext? (flaskサーバ起動中は保持しているデータ)に入れる？？？
+_plugins = []
 
 #
 # load configure
@@ -62,7 +63,7 @@ def workflows():
     #
     # ElasticSearchから検索対象のworkflowを抽出
     #
-    cwl = CwlMetrics(_config["es_endpoint"], _config["es_index_name"], plugins)
+    cwl = CwlMetrics(_config["es_endpoint"], _config["es_index_name"], _plugins)
     recs = cwl.search(from_date, to_date, list(set([keyword1, keyword2, keyword3])))
 
     return render_template(
@@ -90,10 +91,11 @@ def show_content():
     graph_type = request.args.get("type")
 
     # cwl metrics 初期化
-    cwl = CwlMetrics(_config["es_endpoint"], _config["es_index_name"], plugins)
+    cwl = CwlMetrics(_config["es_endpoint"], _config["es_index_name"], _plugins)
     # graph data モデル初期化
     # TODO: graph_typeを削除
-    graph = Graph(cwl, graph_type, plugins)
+    app.logger.debug("workflow_data: {}".format(_plugins))
+    graph = Graph(graph_type, _plugins)
 
     for workflow_id in list(set(workflow_ids.split(","))):
         #
@@ -118,7 +120,7 @@ def show_content():
     for workflow_table_data in graph.workflows:
         # pn(...(p3(p2(p1(w)))))
         workflow_table_data["ext_columns"] = []
-        for plugin in plugins:
+        for plugin in _plugins:
             workflow_table_data = plugin.table.build(workflow_table_data)
         workflows.append(workflow_table_data)
 
@@ -172,5 +174,5 @@ def show_content():
 
 if __name__ == "__main__":
     # TODO: config path
-    plugins = loader.load("./dh_config.yml")
+    _plugins = loader.load("./dh_config.yml")
     app.run(host="0.0.0.0")

@@ -3,8 +3,8 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from elasticsearch import Elasticsearch
-from datetime import datetime
-import json
+import utils.dh_util as dh_util
+# import json
 
 
 class CwlMetrics:
@@ -116,7 +116,7 @@ class CwlMetrics:
             end_date = hit["_source"]["workflow"]["end_date"]
             hit["_source"]["workflow"][
                 "workflow_elapsed_sec"
-            ] = self.workflow_elapsed_sec(start_date, end_date)
+            ] = dh_util.elapsed_sec(start_date, end_date)
 
             # step 情報がなければskip
             if "steps" not in hit["_source"] or len(hit["_source"]["steps"]) == 0:
@@ -150,13 +150,13 @@ class CwlMetrics:
 
         cwl_workflow_data = res["hits"]["hits"][0]["_source"]
         #
-        # workflow_elapsed_sec計算
+        # elapsed_sec計算
         #
         start_date = cwl_workflow_data["workflow"]["start_date"]
         end_date = cwl_workflow_data["workflow"]["end_date"]
         cwl_workflow_data["workflow"][
             "workflow_elapsed_sec"
-        ] = self.workflow_elapsed_sec(start_date, end_date)
+        ] = dh_util.elapsed_sec(start_date, end_date)
 
         #
         # step毎の elapsed_sec 計算
@@ -187,7 +187,7 @@ class CwlMetrics:
         for step_name, val in steps_sorted.items():
             start_date = val["container"]["process"]["start_time"]
             end_date = val["container"]["process"]["end_time"]
-            step_elapsed_sec = self.workflow_elapsed_sec(start_date, end_date)
+            step_elapsed_sec = dh_util.elapsed_sec(start_date, end_date)
             cwl_workflow_data["steps"][step_name]["step_elapsed_sec"] = step_elapsed_sec
 
         for plugin in self.plugins:
@@ -196,22 +196,12 @@ class CwlMetrics:
 
         # TODO: for each plugin
         # debug code
-        with open("es.json", "w") as f:
-            f.write(json.dumps(res, indent=2))
-        with open("jsondata.json", "w") as f:
-            f.write(json.dumps(cwl_workflow_data, indent=2))
+        # with open("es.json", "w") as f:
+        #     f.write(json.dumps(res, indent=2))
+        # with open("jsondata.json", "w") as f:
+        #     f.write(json.dumps(cwl_workflow_data, indent=2))
         # workflowをidで指定して検索したので、workflowは一つしかないはず
         return cwl_workflow_data
-
-    def workflow_elapsed_sec(self, start_date, end_date):
-        """
-        end_data - start_date の秒数計算
-        """
-        start_timestamp = datetime.strptime(start_date[0:19], "%Y-%m-%dT%H:%M:%S")
-        end_timestamp = datetime.strptime(end_date[0:19], "%Y-%m-%dT%H:%M:%S")
-        workflow_elapsed_sec = (end_timestamp - start_timestamp).total_seconds()
-
-        return int(workflow_elapsed_sec)
 
     # TODO 不要?
     def sort_step(self, steps):

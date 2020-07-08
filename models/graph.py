@@ -5,10 +5,11 @@
 import re
 import copy
 import yaml
+import utils.dh_util as dh_util
 
 
 class Graph:
-    def __init__(self, cwl, graph_type, plugins):
+    def __init__(self, graph_type, plugins):
         """
 
         Attributes:
@@ -25,7 +26,6 @@ class Graph:
                 raise ("prices.yaml do not have `prices`")
             self.prices_ = prices["prices"]
 
-        self.cwl_ = cwl
         if graph_type == "elapsed_time":
             self.graph_name = "Elapsed Time"
             self.graph_unit = "sec"
@@ -110,7 +110,7 @@ class Graph:
             start_date = step_keys["container"]["process"]["start_time"]
             end_date = step_keys["container"]["process"]["end_time"]
             # TODO: utilで定義するか、引き算して時間を出す(cwlの引き渡しをやめる)
-            workflow_elapsed_sec = self.cwl_.workflow_elapsed_sec(start_date, end_date)
+            workflow_elapsed_sec = dh_util.elapsed_sec(start_date, end_date)
 
             d3_workflow["itype-{}".format(step_name_without_no)] = instance_type
             d3_workflow["time-{}".format(step_name_without_no)] = workflow_elapsed_sec
