@@ -205,6 +205,7 @@ class CwlMetrics:
 
         for plugin in self.plugins:
             # TODO: pluginメソッド名見直し
+            # TODO; fetchがNoneのときの考慮
             cwl_workflow_data = plugin.fetch.build(cwl_workflow_data)
 
         # TODO: for each plugin
@@ -215,10 +216,3 @@ class CwlMetrics:
         #     f.write(json.dumps(cwl_workflow_data, indent=2))
         # workflowをidで指定して検索したので、workflowは一つしかないはず
         return cwl_workflow_data
-
-    # TODO 不要?
-    def sort_step(self, steps):
-        """
-        stepのdictをstart_date順にsortする
-        """
-        return steps

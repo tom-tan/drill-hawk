@@ -17,9 +17,9 @@ from plugins import loader
 #
 app = Flask(__name__, static_url_path="/dh")
 app.config["DEBUG"] = True
+
 # TODO: flaskのcontext? (flaskサーバ起動中は保持しているデータ)に入れる？？？
 _plugins = []
-
 #
 # load configure
 #
@@ -87,15 +87,11 @@ def show_content():
     # ElasticSearchから検索対象のworkflowを抽出
     #
     workflow_ids = request.args.get("workflow_id")
-    # TODO: graph_typeを削除
-    graph_type = request.args.get("type")
 
     # cwl metrics 初期化
     cwl = CwlMetrics(_config["es_endpoint"], _config["es_index_name"], _plugins)
     # graph data モデル初期化
-    # TODO: graph_typeを削除
-    graph = Graph(graph_type, _plugins)
-
+    graph = Graph(_plugins)
     for workflow_id in list(set(workflow_ids.split(","))):
         #
         # ElasticSearch から指定workflowの情報を抽出
@@ -125,7 +121,7 @@ def show_content():
 
     # app.logger.debug("worfkflows: {}".format(workflows))
 
-    # json形式に変換
+    # scriptタグ内にデータを埋め込むため、json形式に変換
     json_data = json.dumps(graph.data, ensure_ascii=False, indent=4, sort_keys=True)
 
     # total_keys を tool_id でuniq
@@ -147,24 +143,9 @@ def show_content():
         elif "time" in key:
             time_total_keys.append(key)
 
-    # TODO: グラフを2つ並べたため不要?
-    # toggle url
-    toggle_url = "./show?type={}&workflow_id={}".format(
-        graph.other["graph_type"], workflow_ids
-    )
-
     return render_template(
         "show_content.html",
-        # TODO: 両方出すから不要?
-        graph_type=graph_type,
-        graph_name=graph.graph_name,
-        graph_unit=graph.graph_unit,
-        # TODO: 両方出すから不要?
-        graph_other=graph.other,
-        # TODO: 両方出すから不要?
-        graph_other_url=toggle_url,
-        # TODO: contentsをworkflowsまたはtable_dataにリネームしてはどうか?
-        contents=workflows,
+        contents=graph.workflows,
         data=json_data,
         cost_keys=str(cost_total_keys),
         time_keys=str(time_total_keys),

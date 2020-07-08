@@ -9,7 +9,7 @@ import utils.dh_util as dh_util
 
 
 class Graph:
-    def __init__(self, graph_type, plugins):
+    def __init__(self, plugins):
         """
 
         Attributes:
@@ -25,20 +25,6 @@ class Graph:
             if "prices" not in prices:
                 raise ("prices.yaml do not have `prices`")
             self.prices_ = prices["prices"]
-
-        if graph_type == "elapsed_time":
-            self.graph_name = "Elapsed Time"
-            self.graph_unit = "sec"
-            self.graph_sym = "time"
-            other = {"graph_name": "Usage Fee", "graph_type": "usage_fee"}
-            self.other = other
-        else:
-            self.graph_name = "Usage Fee"
-            self.graph_unit = "usd"
-            self.graph_sym = "cost"
-            self.other_type = "elapsed_time"
-            other = {"graph_name": "Elapsed Time", "graph_type": "elapsed_time"}
-            self.other = other
 
         self.data = []
         self.total_keys = []
@@ -85,11 +71,13 @@ class Graph:
             instance_type = step_keys["platform"]["ec2_instance_type"]
 
             # TODO: stepごとにd3_workflow上のキーを分ける必要が有るのでは?
-            d3_workflow["ncpu_cores"] = step_keys["platform"]["ncpu_cores"]
-            d3_workflow["total_memory"] = step_keys["platform"]["total_memory"]
+            # TODO: feature/two_graphでは削除されいてる
+            # d3_workflow["ncpu_cores"] = step_keys["platform"]["ncpu_cores"]
+            # d3_workflow["total_memory"] = step_keys["platform"]["total_memory"]
 
             # TODO: stepに無関係(stepが有る場合に実行したい?)
             # TOOD: step_nameのループの外に出す?
+
             # workflow_id shorting
             # converted_reconf_hisat2-6d6a34a6e1c711e880080210a3f1930c
             # -> converted_reconf_hisat2-6d6a34(6bytes)
