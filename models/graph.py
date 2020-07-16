@@ -18,7 +18,7 @@ class Graph:
           workflows   表のデータ。d3_workflow にstepsを追加したもの(逆順)
         """
 
-        # AWS Cost per a hour(ap-northeast-1)
+        # Cost (USD) per a hour
         self.prices_ = []
         with open("prices.yml", "rb") as file:
             prices = yaml.safe_load(file)
@@ -48,11 +48,10 @@ class Graph:
         return workflow_elapsed_sec * instance_cost / 60.0  # 60minutes
 
     # 指定されたworkflow のstepを抽出
-    # TODO resをworkflow_dataにリネーム
     def build(self, workflow_data):
+        """ グラフ描画に必要な情報を抽出し、self.data に格納する。
+        TODO: d3_workflowのデータ定義
         """
-        """
-        print("graph build")
         if "workflow" not in workflow_data:
             return None
 
@@ -77,12 +76,7 @@ class Graph:
 
             # TODO: stepに無関係(stepが有る場合に実行したい?)
             # TOOD: step_nameのループの外に出す?
-
-            # workflow_id shorting
-            # converted_reconf_hisat2-6d6a34a6e1c711e880080210a3f1930c
-            # -> converted_reconf_hisat2-6d6a34(6bytes)
-            # TODO: workflow_id が十分長いときだけ切る (reconf以外のcwl_fileの場合の対応)
-            workflow_id = wf["cwl_file"][:-26]
+            workflow_id = wf["cwl_file"]
             d3_workflow["workflow_id"] = workflow_id
             d3_workflow["workflow_name"] = workflow_id
             d3_workflow["input_runid"] = wf["inputs"]["filename"]
@@ -93,7 +87,6 @@ class Graph:
             #
             # d3.js グラフ json data用
             #
-
             # step 当たりの経過時間
             start_date = step_keys["container"]["process"]["start_time"]
             end_date = step_keys["container"]["process"]["end_time"]

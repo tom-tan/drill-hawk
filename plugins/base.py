@@ -20,7 +20,7 @@ class DHFetchPlugin(object):
 
 
 class DHGraphPlugin(object):
-    def build(self, graph_sym, workflow_data, graph_data, steps, total_keys):
+    def build(self, workflow_data, graph_data, steps, total_keys):
         """ グラフデータにプラグインが付加したいデータを追加する。
 
         :param graph_sym:

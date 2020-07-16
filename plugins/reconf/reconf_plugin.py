@@ -1,11 +1,9 @@
 from datetime import datetime
-
-# import sys
-# from flask import render_template
 from jinja2 import Environment, BaseLoader
 from plugins import base
 
 reconf_cell_template = """
+<!-- TODO: 条件を意味がわかる表現にする: (例: if step.reconf is True) -->
 {% if step.step_name[0] != '_' %}
 <div class="ra_cost_time">
 <span class="small_font">TOTAL:</span>
@@ -26,6 +24,17 @@ reconf_cell_template = """
 jinja2_env = Environment(loader=BaseLoader())
 
 
+def _elapsed_sec(start_date, end_date):
+    """
+    end_data - start_date の秒数計算
+    """
+    start_timestamp = datetime.strptime(start_date[0:19], "%Y-%m-%dT%H:%M:%S")
+    end_timestamp = datetime.strptime(end_date[0:19], "%Y-%m-%dT%H:%M:%S")
+    elapsed_sec = (end_timestamp - start_timestamp).total_seconds()
+
+    return int(elapsed_sec)
+
+
 class ASRAFetch(base.DHFetchPlugin):
     def __init__(self):
         pass
@@ -38,17 +47,6 @@ class ASRAFetch(base.DHFetchPlugin):
             "workflow.prepare.*",
             "steps.*.reconf.*",
         ]
-
-    # pluginとして定義
-    def elapsed_sec(self, start_date, end_date):
-        """
-        end_data - start_date の秒数計算
-        """
-        start_timestamp = datetime.strptime(start_date[0:19], "%Y-%m-%dT%H:%M:%S")
-        end_timestamp = datetime.strptime(end_date[0:19], "%Y-%m-%dT%H:%M:%S")
-        elapsed_sec = (end_timestamp - start_timestamp).total_seconds()
-
-        return int(elapsed_sec)
 
     # TODO: applyはpythonの予約後? 調査する pandadでもapplyは使われているが、
     # TODO; workflow_dataに対するデータ加工なのでgraph.buildに移すのが良さそう(2つに分ける意味が有るか?)
@@ -73,12 +71,10 @@ class ASRAFetch(base.DHFetchPlugin):
             end_date = cwl_workflow_data["workflow"]["prepare"]["end_time"]
             cwl_workflow_data["workflow"][
                 "prepare_elapsed_sec"
-            ] = self.elapsed_sec(start_date, end_date)
+            ] = _elapsed_sec(start_date, end_date)
 
         # reconf 時間は、workflow全体分をグラフ表示
         total_reconf_elapsed_sec = 0
-
-        # assert len(cwl_workflow_data) == 1
 
         # prepare step計算
         cwl_workflow_data["workflow"]["prepare_elapsed_sec"] = 0
@@ -87,7 +83,7 @@ class ASRAFetch(base.DHFetchPlugin):
             end_date = cwl_workflow_data["workflow"]["prepare"]["end_time"]
             cwl_workflow_data["workflow"][
                 "prepare_elapsed_sec"
-            ] = self.elapsed_sec(start_date, end_date)
+            ] = _elapsed_sec(start_date, end_date)
 
         # reconf 時間は、workflow全体分をグラフ表示
         total_reconf_elapsed_sec = 0
@@ -101,12 +97,12 @@ class ASRAFetch(base.DHFetchPlugin):
                 # RA 時間
                 ra_start_date = val["reconf"]["ra"]["start_time"]
                 ra_end_date = val["reconf"]["ra"]["end_time"]
-                ra_elapsed_sec = self.elapsed_sec(ra_start_date, ra_end_date)
+                ra_elapsed_sec = _elapsed_sec(ra_start_date, ra_end_date)
                 cwl_workflow_data["steps"][step_name]["ra_elapsed_sec"] = ra_elapsed_sec
 
                 # AS Core処理時間 = reconf開始時間 - RA開始時間
                 reconf_start_date = val["reconf"]["start_time"]
-                as_elapsed_sec = self.elapsed_sec(
+                as_elapsed_sec = _elapsed_sec(
                     reconf_start_date, ra_start_date
                 )
                 cwl_workflow_data["steps"][step_name]["as_elapsed_sec"] = as_elapsed_sec
@@ -173,6 +169,13 @@ class ASRAGraph(base.DHGraphPlugin):
         graph_data["total_reconf_elapsed_sec"] = workflow_data[
             "total_reconf_elapsed_sec"
         ]
+
+        # workflow_id shorting (overwrite)
+        # converted_reconf_hisat2-6d6a34a6e1c711e880080210a3f1930c
+        # -> converted_reconf_hisat2-6d6a34(6bytes)
+        workflow_id = wf["cwl_file"][:-26]
+        graph_data["workflow_id"] = workflow_id
+        graph_data["workflow_name"] = workflow_id
 
         #
         # reconf合計 stepを追加する

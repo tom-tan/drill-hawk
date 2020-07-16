@@ -11,7 +11,6 @@ def load(config_path=None):
     with open(config_path) as f:
         dh_config = yaml.safe_load(f)
 
-    # TODO: 順番を表とグラフで異なるように制御したい?
     plugin_path_list = dh_config.get("plugins")
     if plugin_path_list is None:
         plugin_path_list = []

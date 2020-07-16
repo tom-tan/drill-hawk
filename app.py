@@ -106,10 +106,6 @@ def show_content():
         # cwl-metrics形式jsonから、workflow 表示用モデルを構築する
         #
         graph.build(workflow_data)
-        # TODO; graph内部でpluginの処理を適用するようにしたが、外に出すのが良いか?
-        # for plugin in plugins:
-        # TODO:　データ加工というクラス名にする, fetchと重複する部分が有る
-        # plugins.graph.build(graph.data,)
 
     workflows = []
     for workflow_table_data in graph.workflows:
