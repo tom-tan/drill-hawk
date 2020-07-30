@@ -192,9 +192,7 @@ class CwlMetrics:
         )
         cwl_workflow_data["steps"] = steps_sorted
 
-        # TODO: cwlで定義されているのか、galaxy固有雨の項目なのかを確認
-        # TODO; galaxyの項目である場合galaxy用のプラグインにする? -> cwlに対応する項目はないのか?
-        # galaxyのstepの実行時間を集計する
+        # stepの実行時間を集計する
         for step_name, val in steps_sorted.items():
             start_date = val["container"]["process"]["start_time"]
             end_date = val["container"]["process"]["end_time"]
