@@ -50,7 +50,7 @@ class Graph:
     # 指定されたworkflow のstepを抽出
     def build(self, workflow_data):
         """ グラフ描画に必要な情報を抽出し、self.data に格納する。
-        TODO: d3_workflowのデータ定義
+        TODO: d3_workflowのデータ定義 -> model.md
         """
         if "workflow" not in workflow_data:
             return None

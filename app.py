@@ -120,6 +120,8 @@ def show_content():
     # scriptタグ内にデータを埋め込むため、json形式に変換
     json_data = json.dumps(graph.data, ensure_ascii=False, indent=4, sort_keys=True)
 
+    # toolの色を決める
+    # 凡例上での並び順をきめる
     # total_keys を tool_id でuniq
     total_keys_with_number = sorted(graph.total_keys)
 

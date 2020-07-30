@@ -175,7 +175,7 @@ class CwlMetrics:
         # step毎の elapsed_sec 計算
         #
         if "steps" not in cwl_workflow_data:
-            # TODO log?
+            # TODO stepがないというエラーログを出力?
             return None
 
         is_old_type = False

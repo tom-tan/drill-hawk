@@ -188,6 +188,7 @@ class ASRAGraph(base.DHGraphPlugin):
         graph_data["end-{}".format(name)] = ""
         # グラフ出力する項目名の設定
         for graph_sym in ["cost", "time"]:
+            # TODO: 2の説明
             total_keys.insert(0, "{:02d}-{}-{}".format(2, graph_sym, name))
         steps.insert(0, self.__null_metrics(name))
 
@@ -201,6 +202,7 @@ class ASRAGraph(base.DHGraphPlugin):
         graph_data["start-{}".format(name)] = ""
         graph_data["end-{}".format(name)] = ""
         for graph_sym in ["cost", "time"]:
+            # TODO: 1の説明
             total_keys.insert(0, "{:02d}-{}-{}".format(1, graph_sym, name))
         steps.insert(0, self.__null_metrics(name))
 
