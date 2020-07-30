@@ -51,10 +51,44 @@ class ASRAFetch(base.DHFetchPlugin):
     # TODO: applyはpythonの予約後? 調査する pandadでもapplyは使われているが、
     # TODO; workflow_dataに対するデータ加工なのでgraph.buildに移すのが良さそう(2つに分ける意味が有るか?)
     def build(self, cwl_workflow_data):
-        """ AS, RAの処理時間の情報を計算して、cwl_workflow_dataに格納する
+        """ AS, RAの処理時間の情報を計算して、cwl_workflow_dataに項目として格納する
+        :param cwl_workflow_data: cwl_metrics の標準データ + reconf用追加情報
         :return: 情報追加した cwl_workflow_data
+
+        .. note::
+            cwl_workflow_data の標準は、以下のドキュメントを参照
+
+            <https://github.com/inutano/cwl-metrics/tree/master/docs>
+
+            本reconf plugin は、以下の仕様追加項目がcwl_workflow_data に設定される前提
+
+            - .prepare ... 再構成用前処理
+            - .steps[`step_name`].reconf ... 再構成用各step前処理
+
+            args cwl_workflow_data ex.
+            ---
+            {'workflow':
+              {
+               'prepare': {
+                 'start_time': '2020-05-05T14:22:15',
+                 'end_date': '2020-05-05T15:06:28',
+                 'end_time': '2020-05-05T14:22:22'
+               },
+               ...
+               'steps': {
+                 'HISAT2-3': {
+                   'stepname': 'HISAT2-3',
+                   'start_date': '2020-05-05T14:24:37',
+                   'end_date': '2020-05-05T14:54:06',
+                   'reconf': {
+                     'start_time': '2020-05-05T14:22:23',
+                     'end_time': '2020-05-05T14:24:36',
+                     'ra': {'start_time': '2020-05-05T14:22:23.409770',
+                     'end_time': '2020-05-05T14:24:29.092136'}
+                   },
+                 },
+                 ...
         """
-        # (TODO: データタイプを定義する)
         # TODO: HTMLを出力するのはセルに複数の値を入れることが有るため
         # データを一気に出力形式に変換するのかは微妙。(データ加工と、表現を分けるか)
         # AS/RAの場合はフェッチしたデータに必要な情報が入っているが
@@ -69,9 +103,9 @@ class ASRAFetch(base.DHFetchPlugin):
         if "prepare" in cwl_workflow_data["workflow"]:
             start_date = cwl_workflow_data["workflow"]["prepare"]["start_time"]
             end_date = cwl_workflow_data["workflow"]["prepare"]["end_time"]
-            cwl_workflow_data["workflow"][
-                "prepare_elapsed_sec"
-            ] = _elapsed_sec(start_date, end_date)
+            cwl_workflow_data["workflow"]["prepare_elapsed_sec"] = _elapsed_sec(
+                start_date, end_date
+            )
 
         # reconf 時間は、workflow全体分をグラフ表示
         total_reconf_elapsed_sec = 0
@@ -81,11 +115,11 @@ class ASRAFetch(base.DHFetchPlugin):
         if "prepare" in cwl_workflow_data["workflow"]:
             start_date = cwl_workflow_data["workflow"]["prepare"]["start_time"]
             end_date = cwl_workflow_data["workflow"]["prepare"]["end_time"]
-            cwl_workflow_data["workflow"][
-                "prepare_elapsed_sec"
-            ] = _elapsed_sec(start_date, end_date)
+            cwl_workflow_data["workflow"]["prepare_elapsed_sec"] = _elapsed_sec(
+                start_date, end_date
+            )
 
-        # reconf 時間は、workflow全体分をグラフ表示
+        # reconf 時間は、workflowの各step合計分をグラフ表示
         total_reconf_elapsed_sec = 0
         for step_name, val in cwl_workflow_data["steps"].items():
             # reconf 時間初期化
@@ -102,16 +136,14 @@ class ASRAFetch(base.DHFetchPlugin):
 
                 # AS Core処理時間 = reconf開始時間 - RA開始時間
                 reconf_start_date = val["reconf"]["start_time"]
-                as_elapsed_sec = _elapsed_sec(
-                    reconf_start_date, ra_start_date
-                )
+                as_elapsed_sec = _elapsed_sec(reconf_start_date, ra_start_date)
                 cwl_workflow_data["steps"][step_name]["as_elapsed_sec"] = as_elapsed_sec
 
                 cwl_workflow_data["steps"][step_name]["reconf_elapsed_sec"] = (
                     as_elapsed_sec + ra_elapsed_sec
                 )
 
-                # グラフ用総reconf時間
+                # グラフ用各step合計時間
                 total_reconf_elapsed_sec += as_elapsed_sec + ra_elapsed_sec
 
             # 完成したworkflow 保存
@@ -125,8 +157,43 @@ class ASRATable(base.DHTablePlugin):
         pass
 
     def build(self, workflow_table_data):
-        # JSONの値は、HTMLになっている
-        # (TODO: データタイプを定義する)
+        """
+        Workflow詳細の画面上部、各step毎の明細表示欄に
+        表示するための情報項目を追加
+
+        .. note::
+
+            - reconfigure cost
+ 
+            args workflow_table_data ex.
+            ---
+            {
+              'workflow_id': 'reconf_hisat2_cufflinks-d04a47',
+              'workflow_name': 'reconf_hisat2_cufflinks-d04a47',
+              'input_runid': 'http://localhost:8000/ERR188384_1.fastq',
+              ...
+              'steps': [
+                {
+                  'start_date': '',
+                  'end_date': '',
+                  'container': {  ... },
+                  'stepname': '_prepare',
+                  'step_name': '_prepare', 'tool_status': 'ok', 'cwl_file': '_prepare',
+                  'platform': { ... }
+                },
+                {
+                  'start_date': '2020-05-05T14:55:54',
+                  'step_elapsed_sec': 376,
+                  'reconf_elapsed_sec': 96,
+                  'as_elapsed_sec': 1,
+                  'ra_elapsed_sec': 95,
+                  'step_name': 'cufflinks-5',
+                  ...
+                }
+                'ext_columns': []
+            }
+
+        """
         # TODO: HTMLを出力するのはセルに複数の値を入れることが有るため
         # データを一気に出力形式に変換するのかは微妙。(データ加工と、表現を分けるか)
         # AS/RAの場合はフェッチしたデータに必要な情報が入っているが
@@ -138,6 +205,8 @@ class ASRATable(base.DHTablePlugin):
         # reconfigure cost column
         # TODO: 条件の見直し {% if step.step_name[0] != '_' %}
         # title, cells
+
+        # 追加したい列を ext_columns に追加
         column_name = "reconfigure cost"
         workflow_table_data["ext_columns"].append(column_name)
         template = jinja2_env.from_string(reconf_cell_template)
@@ -209,6 +278,10 @@ class ASRAGraph(base.DHGraphPlugin):
         return (graph_data, steps, total_keys)
 
     def __null_metrics(self, stepname):
+        """
+        plugin でcwl_workflow_data にないstepを追加する場合、
+        ダミーの最少step構成を生成する
+        """
         return {
             "start_date": "",
             "end_date": "",
