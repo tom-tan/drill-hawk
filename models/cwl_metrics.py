@@ -204,11 +204,5 @@ class CwlMetrics:
             # TODO; fetchがNoneのときの考慮
             cwl_workflow_data = plugin.fetch.build(cwl_workflow_data)
 
-        # TODO: for each plugin
-        # debug code
-        # with open("es.json", "w") as f:
-        #     f.write(json.dumps(res, indent=2))
-        # with open("jsondata.json", "w") as f:
-        #     f.write(json.dumps(cwl_workflow_data, indent=2))
         # workflowをidで指定して検索したので、workflowは一つしかないはず
         return cwl_workflow_data
