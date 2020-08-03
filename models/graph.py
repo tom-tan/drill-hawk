@@ -63,16 +63,16 @@ class Graph:
         for step_name in workflow_data["steps"]:
             # remove step_no in step_name-99
             step_name_without_no = re.sub(r"-\d+$", "", step_name)
-            step_keys = workflow_data["steps"][step_name]
+            step = workflow_data["steps"][step_name]
             # TODO: 確認 データ上stepnameになっているが
-            step_keys["step_name"] = step_name
+            step["step_name"] = step_name
 
-            instance_type = step_keys["platform"]["ec2_instance_type"]
+            instance_type = step["platform"]["ec2_instance_type"]
 
             # TODO: stepごとにd3_workflow上のキーを分ける必要が有るのでは?
             # TODO: feature/two_graphでは削除されいてる
-            # d3_workflow["ncpu_cores"] = step_keys["platform"]["ncpu_cores"]
-            # d3_workflow["total_memory"] = step_keys["platform"]["total_memory"]
+            # d3_workflow["ncpu_cores"] = step["platform"]["ncpu_cores"]
+            # d3_workflow["total_memory"] = step["platform"]["total_memory"]
 
             # TODO: stepに無関係(stepが有る場合に実行したい?)
             # TOOD: step_nameのループの外に出す?
@@ -88,8 +88,8 @@ class Graph:
             # d3.js グラフ json data用
             #
             # step 当たりの経過時間
-            start_date = step_keys["container"]["process"]["start_time"]
-            end_date = step_keys["container"]["process"]["end_time"]
+            start_date = step["container"]["process"]["start_time"]
+            end_date = step["container"]["process"]["end_time"]
             # TODO: utilで定義するか、引き算して時間を出す(cwlの引き渡しをやめる)
             workflow_elapsed_sec = dh_util.elapsed_sec(start_date, end_date)
 
@@ -100,7 +100,7 @@ class Graph:
                 instance_type, workflow_elapsed_sec
             )
 
-            d3_workflow["id-{}".format(step_name_without_no)] = step_keys["container"][
+            d3_workflow["id-{}".format(step_name_without_no)] = step["container"][
                 "process"
             ]["id"]
             d3_workflow["start-{}".format(step_name_without_no)] = start_date
@@ -118,7 +118,7 @@ class Graph:
             step_no += 1
 
             # 表用
-            steps.append(step_keys)
+            steps.append(step)
 
         # self.total_keys
         total_keys = self.total_keys
