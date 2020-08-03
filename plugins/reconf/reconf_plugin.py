@@ -2,8 +2,33 @@ from datetime import datetime
 from jinja2 import Environment, BaseLoader
 from plugins import base
 
+"""
+reconf_plugin の詳細画面 仕様追加項目
+
+# 表
+
+- 行の追加
+  * step_name ` _prepare` 追加      ... galaxy の prepare job
+  * step_name ` _total_reconf` 追加 ... galaxy の各stepのreconf job を合計したもの
+
+- カラム追加
+  * reconfigure cost .. 各stepの実働時間と 動的再構成のAS/RSの処理にかかった時間
+
+# グラフ
+
+step追加
+
+- _prepare
+- _total_reconf
+
+# 特殊ルール
+
+reconf_plugin で追加したカラム `_prepare` と `_total_reconf` の特殊扱いは、
+先頭の `_` で判定する。
+
+"""
+
 reconf_cell_template = """
-<!-- TODO: 条件を意味がわかる表現にする: (例: if step.reconf is True) -->
 {% if step.step_name[0] != '_' %}
 <div class="ra_cost_time">
 <span class="small_font">TOTAL:</span>
@@ -161,6 +186,9 @@ class ASRATable(base.DHTablePlugin):
         Workflow詳細の画面上部、各step毎の明細表示欄に
         表示するための情報項目を追加
 
+        :param workflow_table_data: workflow_table_data の標準データ + reconf用追加情報
+        :return: 情報追加した workflow_table_data
+
         .. note::
 
             - reconfigure cost
@@ -228,9 +256,12 @@ class ASRAGraph(base.DHGraphPlugin):
     def build(self, workflow_data, graph_data, steps, total_keys):
         """ グラフのデータをreconf情報をつけて加工し、加工後のデータを返す。
 
-        * prepareとreconfにかかった時間
-        * prepareにかかった時間
-        * reconfにかかった時間
+        :param workflow_data: workflow_data
+        :param graph_data: グラフ(d3)用データ
+        :param steps: 各step
+        :param total_keys: 全てのworkflowで共通のstep名列
+
+        :return: [graph_data, steps, total_keys]
         """
         wf = workflow_data["workflow"]
 
@@ -281,6 +312,9 @@ class ASRAGraph(base.DHGraphPlugin):
         """
         plugin でcwl_workflow_data にないstepを追加する場合、
         ダミーの最少step構成を生成する
+        :param stepname: step名
+
+        :return: metrics
         """
         return {
             "start_date": "",
