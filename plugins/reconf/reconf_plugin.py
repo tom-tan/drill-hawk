@@ -16,7 +16,7 @@ reconf_plugin の詳細画面 仕様追加項目
 
 # グラフ
 
-step追加
+step追加 （本来はプラグイン名のprefixをつけるべきか `_reconf_plugin_prepare` TODO）
 
 - _prepare
 - _total_reconf
@@ -61,6 +61,11 @@ def _elapsed_sec(start_date, end_date):
 
 
 class ASRAFetch(base.DHFetchPlugin):
+    """
+    表とグラフの共通処理
+    - workflow_dataに対するデータ加工
+    """
+
     def __init__(self):
         pass
 
@@ -73,8 +78,6 @@ class ASRAFetch(base.DHFetchPlugin):
             "steps.*.reconf.*",
         ]
 
-    # TODO: applyはpythonの予約後? 調査する pandadでもapplyは使われているが、
-    # TODO; workflow_dataに対するデータ加工なのでgraph.buildに移すのが良さそう(2つに分ける意味が有るか?)
     def build(self, cwl_workflow_data):
         """ AS, RAの処理時間の情報を計算して、cwl_workflow_dataに項目として格納する
         :param cwl_workflow_data: cwl_metrics の標準データ + reconf用追加情報
@@ -93,35 +96,36 @@ class ASRAFetch(base.DHFetchPlugin):
             args cwl_workflow_data ex.
             ---
             {'workflow':
-              {
-               'prepare': {
-                 'start_time': '2020-05-05T14:22:15',
-                 'end_date': '2020-05-05T15:06:28',
-                 'end_time': '2020-05-05T14:22:22'
-               },
-               ...
-               'steps': {
-                 'HISAT2-3': {
-                   'stepname': 'HISAT2-3',
-                   'start_date': '2020-05-05T14:24:37',
-                   'end_date': '2020-05-05T14:54:06',
-                   'reconf': {
-                     'start_time': '2020-05-05T14:22:23',
-                     'end_time': '2020-05-05T14:24:36',
-                     'ra': {'start_time': '2020-05-05T14:22:23.409770',
-                     'end_time': '2020-05-05T14:24:29.092136'}
-                   },
-                 },
-                 ...
+                {
+                    'prepare': {
+                    'start_time': '2020-05-05T14:22:15',
+                    'end_date': '2020-05-05T15:06:28',
+                    'end_time': '2020-05-05T14:22:22'
+                },
+                ...
+                'steps': {
+                    'HISAT2-3': {
+                        'stepname': 'HISAT2-3',
+                        'start_date': '2020-05-05T14:24:37',
+                        'end_date': '2020-05-05T14:54:06',
+                        'reconf': {
+                            'start_time': '2020-05-05T14:22:23',
+                            'end_time': '2020-05-05T14:24:36',
+                            'ra': {'start_time': '2020-05-05T14:22:23.409770',
+                            'end_time': '2020-05-05T14:24:29.092136'}
+                        },
+                    },
+                },
+                ...
+            ---
+
+            前提ルール: steps['step_id`] = steps['step_id'].stepname
+
         """
-        # TODO: HTMLを出力するのはセルに複数の値を入れることが有るため
-        # データを一気に出力形式に変換するのかは微妙。(データ加工と、表現を分けるか)
-        # AS/RAの場合はフェッチしたデータに必要な情報が入っているが
-        # 入っていない場合は、ここで? フェッチしてSQL JOINのようなことをする。
-        # TODO: データの取得(必要な場合)は別にしたほうが良さそう
+        # データの取得(必要な場合)は別にしたほうが良さそう
+        #  telegrafのデータを集計したいときはここでする?
+        #  入っていない場合は、ここで? フェッチしてSQL JOINのようなことをする。
         # 副作用を起こしつつ、起こしたデータを返す
-        """ テーブルのセルを加工し、HTML(要検討)を出力する
-        """
 
         # prepare step計算
         cwl_workflow_data["workflow"]["prepare_elapsed_sec"] = 0
@@ -192,7 +196,7 @@ class ASRATable(base.DHTablePlugin):
         .. note::
 
             - reconfigure cost
- 
+
             args workflow_table_data ex.
             ---
             {
@@ -222,17 +226,8 @@ class ASRATable(base.DHTablePlugin):
             }
 
         """
-        # TODO: HTMLを出力するのはセルに複数の値を入れることが有るため
-        # データを一気に出力形式に変換するのかは微妙。(データ加工と、表現を分けるか)
-        # AS/RAの場合はフェッチしたデータに必要な情報が入っているが
-        # 入っていない場合は、ここで? フェッチしてSQL JOINのようなことをする。
-        # TODO: データの取得(必要な場合)は別にしたほうが良さそう
-        # 1. as, raの行の加工
-        # 2. 列を追加
-
-        # reconfigure cost column
-        # TODO: 条件の見直し {% if step.step_name[0] != '_' %}
-        # title, cells
+        # HTMLを出力するのはセルに複数の値を入れることが有る
+        # 列を追加 `reconfigure cost`
 
         # 追加したい列を ext_columns に追加
         column_name = "reconfigure cost"
@@ -244,17 +239,17 @@ class ASRATable(base.DHTablePlugin):
         return workflow_table_data
 
 
-# CREST: graph
 class ASRAGraph(base.DHGraphPlugin):
     def __init__(self):
         pass
 
-    # TODO: telegrafのデータを集計したいときはここでする?
-    # TODO: workflow_data, graph_dataともに全体を示すことを仮定する
-    # TODO: 巨大なデータを扱うときにどうするか?(データベースを介して加工するとか?)
-    # TODO: graph_symについて検討
+    #  workflow_data, graph_dataともに全体
     def build(self, workflow_data, graph_data, steps, total_keys):
-        """ グラフのデータをreconf情報をつけて加工し、加工後のデータを返す。
+        """
+        グラフのデータをreconf情報をつけて加工し、加工後のデータを返す。
+        仮想ステップの追加を行う
+        - prepare
+        - total_reconf
 
         :param workflow_data: workflow_data
         :param graph_data: グラフ(d3)用データ
@@ -265,6 +260,7 @@ class ASRAGraph(base.DHGraphPlugin):
         """
         wf = workflow_data["workflow"]
 
+        # as, raの行の加工
         graph_data["prepare_elapsed_sec"] = wf["prepare_elapsed_sec"]
         graph_data["total_reconf_elapsed_sec"] = workflow_data[
             "total_reconf_elapsed_sec"
@@ -282,13 +278,19 @@ class ASRAGraph(base.DHGraphPlugin):
         #
         name = "_total_reconf"
         graph_data["id-{}".format(name)] = "{}-01".format(name)
+
+        # reconf合計時間(sec) を設定
         graph_data["time-{}".format(name)] = workflow_data["total_reconf_elapsed_sec"]
+        # reconf合計 利用料金(USD)には、 `0` を設定
         graph_data["cost-{}".format(name)] = 0
+
         graph_data["start-{}".format(name)] = ""
         graph_data["end-{}".format(name)] = ""
-        # グラフ出力する項目名の設定
+
+        # グラフに描画するキー項目名（凡例の表示名） `total_reconf` に対応するcostとtimeを追加する
         for graph_sym in ["cost", "time"]:
-            # TODO: 2の説明
+            # time: Elapsed Time
+            # cost: Usage Fee
             total_keys.insert(0, "{:02d}-{}-{}".format(2, graph_sym, name))
         steps.insert(0, self.__null_metrics(name))
 
@@ -297,12 +299,19 @@ class ASRAGraph(base.DHGraphPlugin):
         #
         name = "_prepare"
         graph_data["id-{}".format(name)] = "{}-01".format(name)
+
+        # prepare時間(sec) を設定
         graph_data["time-{}".format(name)] = wf["prepare_elapsed_sec"]
+        # prepare 利用料金(USD)には、 `0` を設定
         graph_data["cost-{}".format(name)] = 0
+
         graph_data["start-{}".format(name)] = ""
         graph_data["end-{}".format(name)] = ""
+
+        # グラフに描画するキー項目名（凡例の表示名） `prepare` に対応するcostとtimeを追加する
         for graph_sym in ["cost", "time"]:
-            # TODO: 1の説明
+            # time: Elapsed Time
+            # cost: Usage Fee
             total_keys.insert(0, "{:02d}-{}-{}".format(1, graph_sym, name))
         steps.insert(0, self.__null_metrics(name))
 

@@ -1,4 +1,3 @@
-
 class DHFetchPlugin(object):
     def get_es_source(self):
         """ メトリクスのElasticSearchでデータをsearchするときに、
@@ -9,7 +8,7 @@ class DHFetchPlugin(object):
         raise NotImplementedError()
 
     def build(self, cwl_workflow_data):
-        """ cwl_workflow_dataにプラグインが必要とするデータを追加する。
+        """ cwl_workflow_dataにプラグインが必要とするデータを追加する。TODO: グラフ、表で共通する計算
 
         :param cwl_workflow_data: メトリクスのElasticSearchから取得したworkflow情報
         :return: 情報追加した cwl_workflow_data
@@ -56,7 +55,6 @@ class DHGraphPlugin(object):
         """ グラフデータにプラグインが付加したいデータを追加する。
 
         TODO: graph_dataの説明を入れる
-        TODO: タイムゾーンは?(メトリクスに入っているタイムゾーンは?)
 
         * ``id-`` : ステップ名 (TODO: 確認)
         * ``time-`` : 実行時間(秒)
@@ -64,12 +62,12 @@ class DHGraphPlugin(object):
         * ``start-`` : 開始時刻
         * ``end-`` : 終了時刻
 
-        :param workflow_data:
-        :param graph_data:
-        :param steps:
-        :param total_keys:
+        :param workflow_data:　TODO
+        :param graph_data: TODO
+        :param steps: TODO
+        :param total_keys: TODO
 
-        :return: 加工後の graph_data, steps, total_keys のtuple
+        :return: 加工後の (graph_data, steps, total_keys)
         """
         # TODO: graphという名前を考え直す
         # graphとあるが、表でもデータを共有する(stepを足しただけ)
@@ -79,7 +77,7 @@ class DHGraphPlugin(object):
 
 class DHTablePlugin(object):
     def build(self, workflow_table_data):
-        """ テーブルのセルを加工し、HTML(TODO 要検討)を出力する
+        """ テーブルのセルを加工し、HTMLデータに変換する。
 
         workflow_table_data["ext_columns"] にプラグインでの追加カラムを入れること
         各カラムの値はstepにカラム名のフィールドを追加し、そこに入れること::
@@ -92,20 +90,12 @@ class DHTablePlugin(object):
         :param workflow_table_data: テーブル化する対象のデータ
         :return: 加工後の workflow_table_data (dict)
         """
-        # TODO: 表の行を足すときはstepに足す。
-        # -> stepでないものは入れるべきではない
-        # (stepとしてのデータをデフォルトで描画するが、それをカスタマイズするすべを作っていないため)
-        # reconfの場合は、prepare, reconfともにgalaxyのstepであるため入れた
 
         raise NotImplementedError()
 
 
-# TODO: 空のプラグインを追加してNoneが来たときにそれをセットする?
-# 暫定版
 class DHPlugin(object):
-    def __init__(
-        self, fetch=None, table=None, graph=None  # DHFetchPlugin  # DHTablePlugin
-    ):  # DHGraphPlugin
+    def __init__(self, fetch=None, table=None, graph=None):
         self.fetch = fetch
         self.table = table
         self.graph = graph
