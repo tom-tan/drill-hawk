@@ -3,6 +3,7 @@ FROM drill-hawk_web
 
 ## 共通
 RUN apk add --update make git py3-sphinx make
+RUN pip3 install sphinx_rtd_theme
 
 # 日本語対応
 RUN update-locale LANG=ja_JP.UTF-8
