@@ -10,6 +10,7 @@ from models.cwl_metrics import CwlMetrics
 from models.graph import Graph
 import os
 import json
+from plugins import loader
 
 #
 # Flask Initialize
@@ -17,6 +18,8 @@ import json
 app = Flask(__name__, static_url_path="/dh")
 app.config["DEBUG"] = True
 
+# TODO: flaskのcontext? (flaskサーバ起動中は保持しているデータ)に入れる？？？
+_plugins = []
 #
 # load configure
 #
@@ -60,7 +63,7 @@ def workflows():
     #
     # ElasticSearchから検索対象のworkflowを抽出
     #
-    cwl = CwlMetrics(_config["es_endpoint"], _config["es_index_name"])
+    cwl = CwlMetrics(_config["es_endpoint"], _config["es_index_name"], _plugins)
     recs = cwl.search(from_date, to_date, list(set([keyword1, keyword2, keyword3])))
 
     return render_template(
@@ -86,26 +89,39 @@ def show_content():
     workflow_ids = request.args.get("workflow_id")
 
     # cwl metrics 初期化
-    cwl = CwlMetrics(_config["es_endpoint"], _config["es_index_name"])
-
+    cwl = CwlMetrics(_config["es_endpoint"], _config["es_index_name"], _plugins)
     # graph data モデル初期化
-    graph = Graph(cwl)
+    graph = Graph(_plugins)
     for workflow_id in list(set(workflow_ids.split(","))):
         #
         # ElasticSearch から指定workflowの情報を抽出
         #
-        res = cwl.search_simple(workflow_id)  # workflow_id = workflow.cwl_file
-        if res is None:
+        # workflow_id = workflow.cwl_file
+        workflow_data = cwl.search_simple(workflow_id)
+        # app.logger.debug("workflow_data: {}".format(workflow_data))
+        if workflow_data is None:
             continue
 
         #
         # cwl-metrics形式jsonから、workflow 表示用モデルを構築する
         #
-        graph.build(res)
+        graph.build(workflow_data)
 
-    # json形式に変換
+    workflows = []
+    for workflow_table_data in graph.workflows:
+        # pn(...(p3(p2(p1(w)))))
+        workflow_table_data["ext_columns"] = []
+        for plugin in _plugins:
+            workflow_table_data = plugin.table.build(workflow_table_data)
+        workflows.append(workflow_table_data)
+
+    # app.logger.debug("worfkflows: {}".format(workflows))
+
+    # scriptタグ内にデータを埋め込むため、json形式に変換
     json_data = json.dumps(graph.data, ensure_ascii=False, indent=4, sort_keys=True)
 
+    # toolの色を決める
+    # 凡例上での並び順をきめる
     # total_keys を tool_id でuniq
     total_keys_with_number = sorted(graph.total_keys)
 
@@ -134,6 +150,5 @@ def show_content():
 
 
 if __name__ == "__main__":
-
-    # サーバーの起動
+    _plugins = loader.load("./dh_config.yml")
     app.run(host="0.0.0.0")

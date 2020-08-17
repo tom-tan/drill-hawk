@@ -1,0 +1,4 @@
+# DH設定のサンプル
+plugins:
+  # plugins以下からのパスをpythonのimportの形式で書く
+  - reconf.reconf_plugin
