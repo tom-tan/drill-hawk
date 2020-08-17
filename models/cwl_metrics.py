@@ -9,7 +9,6 @@ import utils.dh_util as dh_util
 
 class CwlMetrics:
     def __init__(self, elastic_search_endpoint, index_name, plugins, cells=None):
-        # TODO: index_nameはworkflowデータの?
         """ CwlMetricsを取得するクライアント
 
         :param elastic_search_endpoint: ElasticSearchのエンドポイント(IPアドレス、ホスト名とポート番号を:で区切ったもの)
@@ -60,7 +59,6 @@ class CwlMetrics:
         # Elasticsearch index
         self.index_name = index_name
 
-    # TODO: 関数名にwith_condition をつける?
     def search(self, start_date, end_date, keywords):
         #
         # search workflow list by date, keywords
@@ -144,7 +142,6 @@ class CwlMetrics:
 
         return workflows
 
-    # TODO: simpleではなくby_workflow_id か workflowにする?
     def search_simple(self, workflow_id):
         #
         # get workflow by ID
@@ -200,8 +197,6 @@ class CwlMetrics:
             cwl_workflow_data["steps"][step_name]["step_elapsed_sec"] = step_elapsed_sec
 
         for plugin in self.plugins:
-            # TODO: pluginメソッド名見直し
-            # TODO; fetchがNoneのときの考慮
             cwl_workflow_data = plugin.fetch.build(cwl_workflow_data)
 
         # workflowをidで指定して検索したので、workflowは一つしかないはず

@@ -1,5 +1,3 @@
-# TODO: overrideデコレータを定義
-
 
 class DHFetchPlugin(object):
     def get_es_source(self):
@@ -15,6 +13,40 @@ class DHFetchPlugin(object):
 
         :param cwl_workflow_data: メトリクスのElasticSearchから取得したworkflow情報
         :return: 情報追加した cwl_workflow_data
+
+        .. note::
+            cwl_workflow_data の標準は、以下のドキュメントを参照
+
+            <https://github.com/inutano/cwl-metrics/tree/master/docs>
+
+            本reconf plugin は、以下の仕様追加項目がcwl_workflow_data に設定される前提
+
+            - .prepare ... 再構成用前処理
+            - .steps[`step_name`].reconf ... 再構成用各step前処理
+
+            args cwl_workflow_data ex.
+            ---
+            {'workflow':
+              {
+               'prepare': {
+                 'start_time': '2020-05-05T14:22:15',
+                 'end_date': '2020-05-05T15:06:28',
+                 'end_time': '2020-05-05T14:22:22'
+               },
+               ...
+               'steps': {
+                 'HISAT2-3': {
+                   'stepname': 'HISAT2-3',
+                   'start_date': '2020-05-05T14:24:37',
+                   'end_date': '2020-05-05T14:54:06',
+                   'reconf': {
+                     'start_time': '2020-05-05T14:22:23',
+                     'end_time': '2020-05-05T14:24:36',
+                     'ra': {'start_time': '2020-05-05T14:22:23.409770',
+                     'end_time': '2020-05-05T14:24:29.092136'}
+                   },
+                 },
+                 ...
         """
         raise NotImplementedError()
 
@@ -32,7 +64,6 @@ class DHGraphPlugin(object):
         * ``start-`` : 開始時刻
         * ``end-`` : 終了時刻
 
-        :param graph_sym:
         :param workflow_data:
         :param graph_data:
         :param steps:

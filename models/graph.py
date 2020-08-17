@@ -50,7 +50,6 @@ class Graph:
     # 指定されたworkflow のstepを抽出
     def build(self, workflow_data):
         """ グラフ描画に必要な情報を抽出し、self.data に格納する。
-        TODO: d3_workflowのデータ定義 -> model.md
         """
         if "workflow" not in workflow_data:
             return None
@@ -90,7 +89,6 @@ class Graph:
             # step 当たりの経過時間
             start_date = step_keys["container"]["process"]["start_time"]
             end_date = step_keys["container"]["process"]["end_time"]
-            # TODO: utilで定義するか、引き算して時間を出す(cwlの引き渡しをやめる)
             workflow_elapsed_sec = dh_util.elapsed_sec(start_date, end_date)
 
             d3_workflow["itype-{}".format(step_name_without_no)] = instance_type
@@ -123,7 +121,6 @@ class Graph:
         # self.total_keys
         total_keys = self.total_keys
         for plugin in self.plugins:
-            # TODO: 現状、cost, time同時にbuildするがどうするのが良いか検討
             (d3_workflow, step, total_keys) = plugin.graph.build(
                 workflow_data, d3_workflow, steps, total_keys
             )

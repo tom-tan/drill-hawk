@@ -131,7 +131,6 @@ def show_content():
         if key_name not in total_keys:
             total_keys.append(key_name)
 
-    # TODO: pluginとのやり取りを決める(現状、time, costキー)
     # cost, time のそれぞれのグラフに表示するキーを抽出
     cost_total_keys = []
     time_total_keys = []
@@ -151,6 +150,5 @@ def show_content():
 
 
 if __name__ == "__main__":
-    # TODO: config path
     _plugins = loader.load("./dh_config.yml")
     app.run(host="0.0.0.0")
