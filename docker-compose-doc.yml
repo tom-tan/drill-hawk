@@ -1,0 +1,16 @@
+version: "3"
+services:
+  doc:
+    build:
+      context: doc/docker
+    ports:
+      # flask port 5000 -> local 5001
+      - "5001:5000"
+    volumes:
+      - .:/app
+    environment:
+      - ES_ENDPOINT=${ES_ENDPOINT}
+      - ES_INDEX_NAME=${ES_INDEX_NAME}
+      - KIBANA_ENDPOINT=${KIBANA_ENDPOINT}
+    working_dir: /app/doc
+    command: make singlehtml
