@@ -1,0 +1,349 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="jp" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="jp" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Drill-Hawk プラグイン documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html#document-index" class="icon icon-home"> Drill-Hawk プラグイン
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><p class="caption"><span class="caption-text">目次</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="index.html#document-plugin_api">1. プラグインのベースクラス (plugins.base)</a></li>
+</ul>
+</div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html#document-index">Drill-Hawk プラグイン</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html#document-index">Docs</a> &raquo;</li>
+        
+      <li>Drill-Hawk プラグイン  documentation</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="drill-hawk">
+<h1>Drill-Hawk プラグイン仕様書<a class="headerlink" href="#drill-hawk" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<span id="document-plugin_api"></span><div class="section" id="module-plugins.base">
+<span id="plugins-base"></span><h2>1. プラグインのベースクラス (plugins.base)<a class="headerlink" href="#module-plugins.base" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="plugins.base.DHFetchPlugin">
+<em class="property">class </em><code class="sig-prename descclassname">plugins.base.</code><code class="sig-name descname">DHFetchPlugin</code><a class="headerlink" href="#plugins.base.DHFetchPlugin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Drill-Hawkプラグイン</p>
+<dl class="method">
+<dt id="plugins.base.DHFetchPlugin.build">
+<code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param">cwl_workflow_data</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.base.DHFetchPlugin.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>cwl_workflow_dataにプラグインが必要とするデータを追加する。</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>cwl_workflow_data</strong> -- メトリクスのElasticSearchから取得したworkflow情報</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>引数のcwl_workflow_dataに情報追加したデータ。</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>cwl_workflow_data の標準は、以下のドキュメントを参照</p>
+<p>&lt;<a class="reference external" href="https://github.com/inutano/cwl-metrics/tree/master/docs">https://github.com/inutano/cwl-metrics/tree/master/docs</a>&gt;</p>
+<p>cwl_workflow_data の例は以下の通りである。</p>
+<div class="highlight-none notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21</pre></div></td><td class="code"><div class="highlight"><pre><span></span>{&#39;workflow&#39;:
+  {
+   &#39;prepare&#39;: {
+     &#39;start_time&#39;: &#39;2020-05-05T14:22:15&#39;,
+     &#39;end_date&#39;: &#39;2020-05-05T15:06:28&#39;,
+     &#39;end_time&#39;: &#39;2020-05-05T14:22:22&#39;
+   },
+   ...
+   &#39;steps&#39;: {
+     &#39;HISAT2-3&#39;: {
+       &#39;stepname&#39;: &#39;HISAT2-3&#39;,
+       &#39;start_date&#39;: &#39;2020-05-05T14:24:37&#39;,
+       &#39;end_date&#39;: &#39;2020-05-05T14:54:06&#39;,
+       &#39;reconf&#39;: {
+         &#39;start_time&#39;: &#39;2020-05-05T14:22:23&#39;,
+         &#39;end_time&#39;: &#39;2020-05-05T14:24:36&#39;,
+         &#39;ra&#39;: {&#39;start_time&#39;: &#39;2020-05-05T14:22:23.409770&#39;,
+         &#39;end_time&#39;: &#39;2020-05-05T14:24:29.092136&#39;}
+       },
+     },
+     ...
+</pre></div>
+</td></tr></table></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="plugins.base.DHFetchPlugin.get_es_source">
+<code class="sig-name descname">get_es_source</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plugins.base.DHFetchPlugin.get_es_source" title="Permalink to this definition">¶</a></dt>
+<dd><p>メトリクスのElasticSearchでデータをsearchするときに、
+_sourcesに指定する項目のリストを返す</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>_sourcesに指定するElasticSearch上の項目のリスト (string list)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="plugins.base.DHGraphPlugin">
+<em class="property">class </em><code class="sig-prename descclassname">plugins.base.</code><code class="sig-name descname">DHGraphPlugin</code><a class="headerlink" href="#plugins.base.DHGraphPlugin" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="plugins.base.DHGraphPlugin.build">
+<code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param">workflow_data</em>, <em class="sig-param">graph_data</em>, <em class="sig-param">steps</em>, <em class="sig-param">total_keys</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.base.DHGraphPlugin.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>グラフデータにプラグインが付加したいデータを追加する。</p>
+<p>graph_dataには以下のプレフィックスをステップ名につけたものをキーとして、
+グラフ化するデータ(実行時間、利用料金)が入っている。</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">id-</span></code> : ステップ名</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">time-</span></code> : 実行時間(秒)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cost-</span></code> : 利用料金(USD)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">start-</span></code> : 開始時刻</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">end-</span></code> : 終了時刻</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>workflow_data</strong> -- DHFetchPluginで処理した後のデータ</p></li>
+<li><p><strong>graph_data</strong> -- グラフ(d3)用データ</p></li>
+<li><p><strong>steps</strong> -- ステップごとのデータ</p></li>
+<li><p><strong>total_keys</strong> -- 全てのworkflowで出現するステップをソートしたリスト</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>加工後の (graph_data, steps, total_keys)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="plugins.base.DHPlugin">
+<em class="property">class </em><code class="sig-prename descclassname">plugins.base.</code><code class="sig-name descname">DHPlugin</code><span class="sig-paren">(</span><em class="sig-param">fetch=None</em>, <em class="sig-param">table=None</em>, <em class="sig-param">graph=None</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.base.DHPlugin" title="Permalink to this definition">¶</a></dt>
+<dd><p>pluginのpythonモジュールに <code class="docutils literal notranslate"><span class="pre">`create_plugin(*args,</span> <span class="pre">**kwargs)`</span></code> を定義し
+その関数でpluginインスタンスを返すように実装すること。</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">create_plugin</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">plugin</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">DHPlugin</span><span class="p">(</span><span class="n">fetch</span><span class="o">=</span><span class="n">FetchPlugin</span><span class="p">(),</span>
+                           <span class="n">table</span><span class="o">=</span><span class="n">TablePlugin</span><span class="p">(),</span>
+                           <span class="n">graph</span><span class="o">=</span><span class="n">GraphPlugin</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">plugin</span>
+</pre></div>
+</td></tr></table></div>
+</dd></dl>
+
+<dl class="class">
+<dt id="plugins.base.DHTablePlugin">
+<em class="property">class </em><code class="sig-prename descclassname">plugins.base.</code><code class="sig-name descname">DHTablePlugin</code><a class="headerlink" href="#plugins.base.DHTablePlugin" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="plugins.base.DHTablePlugin.build">
+<code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param">workflow_table_data</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.base.DHTablePlugin.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>テーブルのセルを加工し、セルごとにHTMLデータに変換する。</p>
+<p>workflow_table_data[&quot;ext_columns&quot;] にプラグインでの追加カラムを入れること
+各カラムの値はstepにカラム名のフィールドを追加し、そこに入れること。</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">workflow_table_data</span><span class="p">[</span><span class="s2">&quot;ext_columns&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">column_name</span><span class="p">)</span>
+<span class="n">template</span> <span class="o">=</span> <span class="n">jinja2_env</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span><span class="n">reconf_cell_template</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="n">workflow_table_data</span><span class="p">[</span><span class="s2">&quot;steps&quot;</span><span class="p">]:</span>
+    <span class="n">step</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="n">workflow_table_data</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>workflow_table_data</strong> -- テーブル化する対象のデータ</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>加工後の workflow_table_data (dict)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, NII
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

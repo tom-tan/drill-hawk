@@ -198,33 +198,35 @@ class ASRATable(base.DHTablePlugin):
             - reconfigure cost
 
             args workflow_table_data ex.
-            ---
-            {
-              'workflow_id': 'reconf_hisat2_cufflinks-d04a47',
-              'workflow_name': 'reconf_hisat2_cufflinks-d04a47',
-              'input_runid': 'http://localhost:8000/ERR188384_1.fastq',
-              ...
-              'steps': [
-                {
-                  'start_date': '',
-                  'end_date': '',
-                  'container': {  ... },
-                  'stepname': '_prepare',
-                  'step_name': '_prepare', 'tool_status': 'ok', 'cwl_file': '_prepare',
-                  'platform': { ... }
-                },
-                {
-                  'start_date': '2020-05-05T14:55:54',
-                  'step_elapsed_sec': 376,
-                  'reconf_elapsed_sec': 96,
-                  'as_elapsed_sec': 1,
-                  'ra_elapsed_sec': 95,
-                  'step_name': 'cufflinks-5',
-                  ...
-                }
-                'ext_columns': []
-            }
 
+            .. code-block:: none
+               :linenos:
+
+               {
+                 'workflow_id': 'reconf_hisat2_cufflinks-d04a47',
+                 'workflow_name': 'reconf_hisat2_cufflinks-d04a47',
+                 'input_runid': 'http://localhost:8000/ERR188384_1.fastq',
+                 ...
+                 'steps': [
+                   {
+                     'start_date': '',
+                     'end_date': '',
+                     'container': {  ... },
+                     'stepname': '_prepare',
+                     'step_name': '_prepare', 'tool_status': 'ok', 'cwl_file': '_prepare',
+                     'platform': { ... }
+                   },
+                   {
+                     'start_date': '2020-05-05T14:55:54',
+                     'step_elapsed_sec': 376,
+                     'reconf_elapsed_sec': 96,
+                     'as_elapsed_sec': 1,
+                     'ra_elapsed_sec': 95,
+                     'step_name': 'cufflinks-5',
+                     ...
+                   }
+                   'ext_columns': []
+               }
         """
         # HTMLを出力するのはセルに複数の値を入れることが有る
         # 列を追加 `reconfigure cost`
@@ -256,7 +258,7 @@ class ASRAGraph(base.DHGraphPlugin):
         :param steps: 各step
         :param total_keys: 全てのworkflowで共通のstep名列
 
-        :return: [graph_data, steps, total_keys]
+        :return: (graph_data, steps, total_keys)
         """
         wf = workflow_data["workflow"]
 
@@ -355,7 +357,9 @@ class ASRAGraph(base.DHGraphPlugin):
         }
 
 
-# TODO: プラグインの初期化時に設定値などを渡す仕組み? 案: dictにして渡す?
 def create_plugin(*args, **kwargs):
+    """
+    pluginのインスタンスを返す
+    """
     plugin = base.DHPlugin(fetch=ASRAFetch(), table=ASRATable(), graph=ASRAGraph())
     return plugin
