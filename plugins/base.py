@@ -105,7 +105,7 @@ class DHTablePlugin(object):
 
 
 class DHPlugin(object):
-    """ pluginのpythonモジュールに ```create_plugin(*args, **kwargs)``` を定義し
+    """ pluginのpythonモジュールに ``create_plugin(*args, **kwargs)`` を定義し
     その関数でpluginインスタンスを返すように実装すること。
 
     .. code-block:: python
