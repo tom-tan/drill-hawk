@@ -12,7 +12,7 @@ class DHFetchPlugin(object):
 
     def get_es_source(self):
         """ メトリクスのElasticSearchでデータをsearchするときに、
-        _sourcesに指定する項目のリストを返す
+        _sourceに指定する項目のリストを返す
 
         :return: _sourcesに指定するElasticSearch上の項目のリスト (string list)
         """

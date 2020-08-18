@@ -71,7 +71,7 @@ class ASRAFetch(base.DHFetchPlugin):
 
     def get_es_source(self):
         """ メトリクスのElasticSearchでデータをsearchするときに、
-        _sourcesに指定する項目を返す
+        _sourceに指定する項目を返す
         """
         return [
             "workflow.prepare.*",

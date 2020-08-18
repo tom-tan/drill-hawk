@@ -12,4 +12,5 @@ Drill-Hawk プラグイン仕様書
    :caption: 目次
    :numbered:
 
+   overview
    plugin_api
