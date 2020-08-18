@@ -1,0 +1,10 @@
+version: "3"
+services:
+  doc:
+    build: docker
+    volumes:
+      - ..:/app
+    environment:
+      # 出力となるHTMLのホスト上での所有者のID
+      - USER_ID=${USER_ID:-1000}
+      - GROUP_ID=${GROUP_ID:-1000}
