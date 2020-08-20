@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="jp" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="jp" > <!--<![endif]-->
+<html class="writer-html5" lang="jp" >
 <head>
   <meta charset="utf-8">
   
@@ -12,27 +11,29 @@
   
 
   
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
   
   
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" /> 
 </head>
@@ -48,7 +49,7 @@
           
 
           
-            <a href="index.html#document-index" class="icon icon-home"> Drill-Hawk プラグイン
+            <a href="#" class="icon icon-home" alt="Documentation Home"> Drill-Hawk プラグイン
           
 
           
@@ -64,6 +65,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -72,12 +74,15 @@
               <!-- Local TOC -->
               <div class="local-toc"><p class="caption"><span class="caption-text">目次</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="index.html#document-plugin_api">1. プラグインのベースクラス (plugins.base)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html#document-overview">1. DrillHawkプラグインの概要</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html#id1">2. 処理順序</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html#document-plugin_api">3. プラグイン API</a></li>
 </ul>
 </div>
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -87,7 +92,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html#document-index">Drill-Hawk プラグイン</a>
+          <a href="#">Drill-Hawk プラグイン</a>
         
       </nav>
 
@@ -116,7 +121,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html#document-index">Docs</a> &raquo;</li>
+      <li><a href="#" class="icon icon-home"></a> &raquo;</li>
         
       <li>Drill-Hawk プラグイン  documentation</li>
     
@@ -135,18 +140,36 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="drill-hawk">
-<h1>Drill-Hawk プラグイン仕様書<a class="headerlink" href="#drill-hawk" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="drillhawk">
+<h1>DrillHawk プラグイン仕様書<a class="headerlink" href="#drillhawk" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
-<span id="document-plugin_api"></span><div class="section" id="module-plugins.base">
-<span id="plugins-base"></span><h2>1. プラグインのベースクラス (plugins.base)<a class="headerlink" href="#module-plugins.base" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
+<span id="document-overview"></span><div class="section" id="drillhawk">
+<h2><span class="section-number">1. </span>DrillHawkプラグインの概要<a class="headerlink" href="#drillhawk" title="Permalink to this headline">¶</a></h2>
+<p>DrillHawkプラグインは、詳細画面に表示される以下の項目をカスタマイズするために作成するpythonコードである。</p>
+<ul class="simple">
+<li><p>ステップの表の項目
+- 行、列の追加のみ</p></li>
+<li><p>ステップの実行時間のグラフ</p></li>
+<li><p>ステップの利用料金のグラフ</p></li>
+</ul>
+</div>
+<div class="section" id="id1">
+<h2><span class="section-number">2. </span>処理順序<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<p>設定ファイル dh_config.yml で記述した順でデータを処理する。</p>
+<p>DrillHawkプラグイン内の処理はfetch, grpah, tableに分かれていて、処理はこの順序で行われる。</p>
+</div>
+<span id="document-plugin_api"></span><div class="section" id="api">
+<h2><span class="section-number">3. </span>プラグイン API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
+<p>プラグインは plugins.base に定義されている <code class="docutils literal notranslate"><span class="pre">DHFetchPlugin</span></code> <code class="docutils literal notranslate"><span class="pre">DHGraphPlugin</span></code> <code class="docutils literal notranslate"><span class="pre">DHTablePlugin</span></code>
+を継承して開発すること。</p>
+<blockquote>
+<div><span class="target" id="module-plugins.base"></span><dl class="py class">
 <dt id="plugins.base.DHFetchPlugin">
 <em class="property">class </em><code class="sig-prename descclassname">plugins.base.</code><code class="sig-name descname">DHFetchPlugin</code><a class="headerlink" href="#plugins.base.DHFetchPlugin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Drill-Hawkプラグイン</p>
-<dl class="method">
+<dl class="py method">
 <dt id="plugins.base.DHFetchPlugin.build">
-<code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param">cwl_workflow_data</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.base.DHFetchPlugin.build" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cwl_workflow_data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.base.DHFetchPlugin.build" title="Permalink to this definition">¶</a></dt>
 <dd><p>cwl_workflow_dataにプラグインが必要とするデータを追加する。</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -207,11 +230,11 @@
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="plugins.base.DHFetchPlugin.get_es_source">
 <code class="sig-name descname">get_es_source</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plugins.base.DHFetchPlugin.get_es_source" title="Permalink to this definition">¶</a></dt>
 <dd><p>メトリクスのElasticSearchでデータをsearchするときに、
-_sourcesに指定する項目のリストを返す</p>
+_sourceに指定する項目のリストを返す</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>_sourcesに指定するElasticSearch上の項目のリスト (string list)</p>
@@ -221,12 +244,12 @@ _sourcesに指定する項目のリストを返す</p>
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="plugins.base.DHGraphPlugin">
 <em class="property">class </em><code class="sig-prename descclassname">plugins.base.</code><code class="sig-name descname">DHGraphPlugin</code><a class="headerlink" href="#plugins.base.DHGraphPlugin" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
+<dd><dl class="py method">
 <dt id="plugins.base.DHGraphPlugin.build">
-<code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param">workflow_data</em>, <em class="sig-param">graph_data</em>, <em class="sig-param">steps</em>, <em class="sig-param">total_keys</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.base.DHGraphPlugin.build" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">workflow_data</span></em>, <em class="sig-param"><span class="n">graph_data</span></em>, <em class="sig-param"><span class="n">steps</span></em>, <em class="sig-param"><span class="n">total_keys</span></em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.base.DHGraphPlugin.build" title="Permalink to this definition">¶</a></dt>
 <dd><p>グラフデータにプラグインが付加したいデータを追加する。</p>
 <p>graph_dataには以下のプレフィックスをステップ名につけたものをキーとして、
 グラフ化するデータ(実行時間、利用料金)が入っている。</p>
@@ -254,10 +277,10 @@ _sourcesに指定する項目のリストを返す</p>
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="plugins.base.DHPlugin">
-<em class="property">class </em><code class="sig-prename descclassname">plugins.base.</code><code class="sig-name descname">DHPlugin</code><span class="sig-paren">(</span><em class="sig-param">fetch=None</em>, <em class="sig-param">table=None</em>, <em class="sig-param">graph=None</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.base.DHPlugin" title="Permalink to this definition">¶</a></dt>
-<dd><p>pluginのpythonモジュールに <code class="docutils literal notranslate"><span class="pre">`create_plugin(*args,</span> <span class="pre">**kwargs)`</span></code> を定義し
+<em class="property">class </em><code class="sig-prename descclassname">plugins.base.</code><code class="sig-name descname">DHPlugin</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fetch</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">table</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">graph</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.base.DHPlugin" title="Permalink to this definition">¶</a></dt>
+<dd><p>pluginのpythonモジュールに <code class="docutils literal notranslate"><span class="pre">create_plugin(*args,</span> <span class="pre">**kwargs)</span></code> を定義し
 その関数でpluginインスタンスを返すように実装すること。</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
@@ -272,12 +295,12 @@ _sourcesに指定する項目のリストを返す</p>
 </td></tr></table></div>
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="plugins.base.DHTablePlugin">
 <em class="property">class </em><code class="sig-prename descclassname">plugins.base.</code><code class="sig-name descname">DHTablePlugin</code><a class="headerlink" href="#plugins.base.DHTablePlugin" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
+<dd><dl class="py method">
 <dt id="plugins.base.DHTablePlugin.build">
-<code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param">workflow_table_data</em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.base.DHTablePlugin.build" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">workflow_table_data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#plugins.base.DHTablePlugin.build" title="Permalink to this definition">¶</a></dt>
 <dd><p>テーブルのセルを加工し、セルごとにHTMLデータに変換する。</p>
 <p>workflow_table_data[&quot;ext_columns&quot;] にプラグインでの追加カラムを入れること
 各カラムの値はstepにカラム名のフィールドを追加し、そこに入れること。</p>
@@ -302,6 +325,7 @@ _sourcesに指定する項目のリストを返す</p>
 
 </dd></dl>
 
+</div></blockquote>
 </div>
 </div>
 </div>
@@ -317,11 +341,19 @@ _sourcesに指定する項目のリストを返す</p>
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2020, NII
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -332,7 +364,6 @@ _sourcesに指定する項目のリストを返す</p>
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {
