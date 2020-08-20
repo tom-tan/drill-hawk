@@ -10,7 +10,7 @@ RUN pip3 install sphinx_rtd_theme
 # RUN update-locale LANG=ja_JP.UTF-8
 ENV LC_CTYPE C.UTF-8
 
-# TODO: markdown対応は保留
+# markdown対応は保留
 # RUN curl -LO https://github.com/jgm/pandoc/releases/download/2.5/pandoc-2.5-1-amd64.deb
 # RUN dpkg -i pandoc-2.5-1-amd64.deb && rm pandoc-2.5-1-amd64.deb
 

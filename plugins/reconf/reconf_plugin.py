@@ -12,11 +12,11 @@ reconf_plugin の詳細画面 仕様追加項目
   * step_name ` _total_reconf` 追加 ... galaxy の各stepのreconf job を合計したもの
 
 - カラム追加
-  * reconfigure cost .. 各stepの実働時間と 動的再構成のAS/RSの処理にかかった時間
+  * reconfigure cost .. 各stepの実働時間と 動的再構成のAS/RAの処理にかかった時間
 
 # グラフ
 
-step追加 （本来はプラグイン名のprefixをつけるべきか `_reconf_plugin_prepare` TODO）
+step追加
 
 - _prepare
 - _total_reconf

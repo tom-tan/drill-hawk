@@ -155,7 +155,6 @@ class CwlMetrics:
         if len(res["hits"]["hits"]) == 0:
             return None
 
-        # TODO 確認
         # assert len(res["hits"]["hits"]) == 1
 
         cwl_workflow_data = res["hits"]["hits"][0]["_source"]
@@ -172,7 +171,8 @@ class CwlMetrics:
         # step毎の elapsed_sec 計算
         #
         if "steps" not in cwl_workflow_data:
-            # TODO stepがないというエラーログを出力?
+            # stepがない
+            print("no steps")
             return None
 
         is_old_type = False

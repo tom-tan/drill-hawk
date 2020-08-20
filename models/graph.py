@@ -63,25 +63,19 @@ class Graph:
             # remove step_no in step_name-99
             step_name_without_no = re.sub(r"-\d+$", "", step_name)
             step = workflow_data["steps"][step_name]
-            # TODO: 確認 データ上stepnameになっているが
+            # 取得したデータ上stepnameになっているが、名前をつけt変えたものをstep_nameとして追加
             step["step_name"] = step_name
 
             instance_type = step["platform"]["ec2_instance_type"]
 
-            # TODO: stepごとにd3_workflow上のキーを分ける必要が有るのでは?
-            # TODO: feature/two_graphでは削除されいてる
-            # d3_workflow["ncpu_cores"] = step["platform"]["ncpu_cores"]
-            # d3_workflow["total_memory"] = step["platform"]["total_memory"]
-
-            # TODO: stepに無関係(stepが有る場合に実行したい?)
-            # TOOD: step_nameのループの外に出す?
+            # stepに無関係(stepが有る場合に実行)
             workflow_id = wf["cwl_file"]
             d3_workflow["workflow_id"] = workflow_id
             d3_workflow["workflow_name"] = workflow_id
             d3_workflow["input_runid"] = wf["inputs"]["filename"]
             d3_workflow["input_size"] = wf["inputs"]["total_size"]
             d3_workflow["workflow_elapsed_sec"] = wf["workflow_elapsed_sec"]
-            # TODO: ここまで　stepに無関係(stepが有る場合に実行したい?)
+            # ここまで　stepに無関係(stepが有る場合に実行したい?)
 
             #
             # d3.js グラフ json data用
@@ -93,7 +87,7 @@ class Graph:
 
             d3_workflow["itype-{}".format(step_name_without_no)] = instance_type
             d3_workflow["time-{}".format(step_name_without_no)] = workflow_elapsed_sec
-            # cost(fee/hour) * cost time(sec)
+            # cost(fee USD/hour) * cost time(sec)
             d3_workflow["cost-{}".format(step_name_without_no)] = self.get_cost(
                 instance_type, workflow_elapsed_sec
             )
@@ -105,7 +99,6 @@ class Graph:
             d3_workflow["end-{}".format(step_name_without_no)] = end_date
 
             # key_name graph_sym, step_name
-            # TODO: cost, timeを同じにする?
             for graph_sym in ["time", "cost"]:
                 key_name = "{}-{}".format(graph_sym, step_name_without_no)
 

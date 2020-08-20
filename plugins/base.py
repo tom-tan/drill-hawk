@@ -1,10 +1,4 @@
 
-#TODO： ドキュメント
-# - 処理順序
-#   classの順序
-#   pluginの順序
-
-
 class DHFetchPlugin(object):
     """ Drill-Hawkプラグイン
 

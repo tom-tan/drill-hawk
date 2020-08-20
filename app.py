@@ -18,7 +18,6 @@ from plugins import loader
 app = Flask(__name__, static_url_path="/dh")
 app.config["DEBUG"] = True
 
-# TODO: flaskのcontext? (flaskサーバ起動中は保持しているデータ)に入れる？？？
 _plugins = []
 #
 # load configure
@@ -113,6 +112,7 @@ def show_content():
         workflow_table_data["ext_columns"] = []
         for plugin in _plugins:
             workflow_table_data = plugin.table.build(workflow_table_data)
+        print(workflow_table_data)
         workflows.append(workflow_table_data)
 
     # app.logger.debug("worfkflows: {}".format(workflows))

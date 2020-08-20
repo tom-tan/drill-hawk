@@ -49,8 +49,7 @@ workflow は、以下の通り
 {
     workflow 全体情報,
     "00-key名": 0,                              # 表示順は、 `00` 部で決まる
-    # TODO 番号はstep番号
-...
+    ...
     "cost-HISAT2": 24.4388,                     # 各stepのcost
     "time-HISAT2": 1713,                        # 各stepのtime
     "start-HISAT2": "2020-05-05T14:25:01",      # 各stepの開始時間
