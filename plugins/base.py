@@ -120,7 +120,7 @@ class DHPlugin(object):
     """
 
     def __init__(self, fetch=None, table=None, graph=None):
-        """ Pluginのインスタンスを返す
+        """ Pluginのインスタンスを作成する
 
         :params fetch: DHFetchPluginのインスタンス
         :params table: DHFTablePluginのインスタンス
