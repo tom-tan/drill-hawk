@@ -83,13 +83,15 @@
               </td>
               <td> {{ step.container.process.image }}<br> {{ step.tool_status }}</td>
               <td>
-                {% if step.step_name[0] != '_' %}
-                <div class="ra_cost_time"> <span class="small_font">TOTAL:</span>
-                  {{ '{:,}'.format(step.step_elapsed_sec) }} sec</div>
-                {{ step.container.process.start_time }}<br>{{ step.container.process.end_time }}
-                {% endif %}
+                  <!-- TODO: _ の条件を除く -->
+                  {% if step.step_name[0] != '_' %}
+                  <div class="ra_cost_time"> <span class="small_font">TOTAL:</span>
+                      {{ '{:,}'.format(step.step_elapsed_sec) }} sec</div>
+                  {{ step.container.process.start_time }}<br>{{ step.container.process.end_time }}
+                  {% endif %}
               </td>
               <td>
+                  <!-- TODO: _ の条件を除く -->
                   {% if step.step_name[0] != '_' %}
                   {{ step.container.process.id[0:12] }}
                   {% endif %}
@@ -105,15 +107,15 @@
           </div>
         </td>
       </tr>
-    {% endfor%}
+      {% endfor%}
     </tbody>
     </table>
   </div>
 
   <!-- d3 グラフ領域 -->
   <h2>
-    <a name="elapsed_time">Elapsed Time</a>
-    <a href="#elapsed_time"><sup>&dagger;</sup></a>
+      <a name="elapsed_time">Elapsed Time</a>
+      <a href="#elapsed_time"><sup>&dagger;</sup></a>
   </h2>
   <div id='time-gantt-bar'></div>
   <div class='legend-div' id="time-gantt-bar-legend"></div>
