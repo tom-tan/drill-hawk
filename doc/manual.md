@@ -35,6 +35,19 @@ DrillHawk のデータ取得先となる Elasticsearch および Kibana のエ�
   - ES_INDEX_NAME
     - Workflow 情報を保存した Elasticsearch インデックス名を指定する e.g. `workflow`
 
+### Configure Plugin Settings
+
+- `dh_config.yml` ファイルを編集し、適用する plugin を指定する。
+  - `plugins` に plugin の名前をリストとして記述する。処理は記述した順に行われる。
+
+```
+# DrillHawk plugin config
+
+plugins:
+  # plugins ディレクトリ配下の PATH を python の import 形式で記述
+  - reconf.reconf_plugin
+```
+
 ## Run DrillHawk
 
 Docker Compose により DrillHawk の Web アプリケーションを起動する。
