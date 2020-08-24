@@ -12,7 +12,7 @@ var initStackedBarChart = {
     //
     // グラフ領域の計算
     width = 960 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom,
+    height = 300 - margin.top - margin.bottom,
 
     //
     // X,Y軸のスケール設定
