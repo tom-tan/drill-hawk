@@ -37,8 +37,9 @@ DrillHawk のデータ取得先となる Elasticsearch および Kibana のエ�
 
 ### Configure Plugin Settings
 
-- `dh_config.yml` ファイルを編集し、適用する plugin を指定する。
-  - `plugins` に plugin の名前をリストとして記述する。処理は記述した順に行われる。
+`dh_config.yml` ファイルを編集し、適用する plugin を指定する。
+
+- `plugins` に plugin の名前をリストとして記述する。処理は記述した順に行われる。
 
 ```
 # DrillHawk plugin config
