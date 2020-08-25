@@ -73,8 +73,8 @@
               <td class="workflow"> </td>
               <td> {{ step.step_name }} </td>
               <td>
-                  <!-- TODO: _ の条件を除く -->
-                {% if step.step_name[0] != '_' %}
+                  {% if step.step_name[0] != '_' %}
+                  <!-- tool実行のステップ -->
                 <span class="small_font">Type:</span> {{ step.platform.ec2_instance_type }}<br>
                 <span class="small_font">Mem:</span> {{ '{:,.0f}'.format(step.platform.total_memory/(1024*1024*1024)) }}GiB<br>
                 <span class="small_font">CPU NUM:</span> {{ step.platform.ncpu_cores }}<br>
@@ -83,16 +83,16 @@
               </td>
               <td> {{ step.container.process.image }}<br> {{ step.tool_status }}</td>
               <td>
-                  <!-- TODO: _ の条件を除く -->
                   {% if step.step_name[0] != '_' %}
+                  <!-- tool実行のステップ -->
                   <div class="ra_cost_time"> <span class="small_font">TOTAL:</span>
                       {{ '{:,}'.format(step.step_elapsed_sec) }} sec</div>
                   {{ step.container.process.start_time }}<br>{{ step.container.process.end_time }}
                   {% endif %}
               </td>
               <td>
-                  <!-- TODO: _ の条件を除く -->
                   {% if step.step_name[0] != '_' %}
+                  <!-- tool実行のステップ -->
                   {{ step.container.process.id[0:12] }}
                   {% endif %}
               </td>
