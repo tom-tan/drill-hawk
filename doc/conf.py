@@ -12,6 +12,8 @@
 #
 import os
 import sys
+from sphinxcontrib.pandoc_markdown import MarkdownParser
+
 sys.path.insert(0, os.path.abspath('..'))
 
 # -- Project information -----------------------------------------------------

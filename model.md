@@ -1,4 +1,11 @@
-# graph用 Javascript記述
+# DrillHawkで扱うデータの定義
+
+## ステップ名の慣例
+
+`_` で始まるステップは、プラグインなどで導入する特別なステップ(仮想ステップ)であるものとする。
+`_` で始まらないステップは、Tool実行のステップであるとする。
+
+<!-- 要するに、cwl metricsで_で始まるようなツールを実行してはならない-->
 
 ## グラフ定義
 
@@ -52,8 +59,8 @@ workflow は、以下の通り
     ...
     "cost-HISAT2": 24.4388,                     # 各stepのcost
     "time-HISAT2": 1713,                        # 各stepのtime
-    "start-HISAT2": "2020-05-05T14:25:01",      # 各stepの開始時間
-    "end-HISAT2": "2020-05-05T14:53:34",        # 各stepの終了時間
+    "start-HISAT2": "2020-05-05T14:25:01",      # 各stepの開始時刻
+    "end-HISAT2": "2020-05-05T14:53:34",        # 各stepの終了時刻
     "itype-HISAT2": "c5.4xlarge",               # 各stepのinstance type
     "id-HISAT2": "71b3329e80f6b08665e709aa6fc282556e307e17a72cf38578d2c1aa78db97bc",
                                                 # 各stepのcontainer_id
@@ -63,20 +70,18 @@ workflow は、以下の通り
 
 workflow 全体情報は、以下の通り
 
-| 項目名 | 説明 | sample |
+| 項目名 | 説明 | 値の例 |
 |-----|----------------|---------|
 | workflow_id | workflow id | reconf_hisat2_cufflinks-d04a47" |
 | workflow_name | workflow name | reconf_hisat2_cufflinks-d04a47" |
 | input_runid | workflow のinput file | http://localhost:8000/ERR188384_1.fastq" |
-| input_size | input file size | 10909719910 |
-| ncpu_cores |  要求CPU数? | 16 |
-| total_memory | 要求メモリ数? | 32662736896 | 
-| workflow_elapsed_sec | workflow 全体にかかった時間 |2655 |
-| prepare_elapsed_sec | prepare 処理にかかった時間 | 7 |
-| total_reconf_elapsed_sec | reconf のかかった合計時間 | 222 |
+| input_size | 入力データのサイズ(byte) | 10909719910 |
+| workflow_elapsed_sec | workflow 全体にかかった時間(秒) |2655 |
+| prepare_elapsed_sec | prepare 処理にかかった時間(秒) | 7 |
+| total_reconf_elapsed_sec | reconf のかかった合計時間(秒) | 222 |
 
 
-### サンプル
+### サンプルデータ
 
 ```
 [
@@ -127,7 +132,7 @@ workflow 全体情報は、以下の通り
 ]
 ```
 
-## 表用データ(flask template)
+## 表用データ
 
 ### 基本的な構造
 
@@ -148,7 +153,7 @@ workflow は、以下の通り
         { reconf 情報 },
         { step 情報 },                          # workflow(ElasticSearch)のstepと同じ
         ...
-    ]                              
+    ]
 
 ...
     "cost-HISAT2": 24.4388,                     # 各stepのcost
@@ -162,7 +167,7 @@ workflow は、以下の通り
 }
 ```
 
-### sample
+### サンプルデータ
 
 ```
 [

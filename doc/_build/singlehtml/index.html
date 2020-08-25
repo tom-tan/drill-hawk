@@ -76,7 +76,9 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="index.html#document-overview">1. DrillHawkプラグインの概要</a></li>
 <li class="toctree-l1"><a class="reference internal" href="index.html#id1">2. 処理順序</a></li>
-<li class="toctree-l1"><a class="reference internal" href="index.html#document-plugin_api">3. プラグイン API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html#id2">3. データ定義</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html#id3">4. DrillHawk プラグインの設定、使用方法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html#document-plugin_api">5. プラグイン API</a></li>
 </ul>
 </div>
             
@@ -158,8 +160,16 @@
 <p>設定ファイル dh_config.yml で記述した順でデータを処理する。</p>
 <p>DrillHawkプラグイン内の処理はfetch, grpah, tableに分かれていて、処理はこの順序で行われる。</p>
 </div>
+<div class="section" id="id2">
+<h2><span class="section-number">3. </span>データ定義<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<p>データ定義については DrillHawkで扱うデータの定義 (model.md) を参照すること。</p>
+</div>
+<div class="section" id="id3">
+<h2><span class="section-number">4. </span>DrillHawk プラグインの設定、使用方法<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<p>DrillHawk プラグインの設定、使用方法については、 DrillHawk Users Manual (manual.md) を参照すること。</p>
+</div>
 <span id="document-plugin_api"></span><div class="section" id="api">
-<h2><span class="section-number">3. </span>プラグイン API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">5. </span>プラグイン API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
 <p>プラグインは plugins.base に定義されている <code class="docutils literal notranslate"><span class="pre">DHFetchPlugin</span></code> <code class="docutils literal notranslate"><span class="pre">DHGraphPlugin</span></code> <code class="docutils literal notranslate"><span class="pre">DHTablePlugin</span></code>
 を継承して開発すること。</p>
 <blockquote>

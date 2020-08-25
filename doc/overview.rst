@@ -15,3 +15,13 @@ DrillHawkプラグインは、詳細画面に表示される以下の項目を�
 
 DrillHawkプラグイン内の処理はfetch, grpah, tableに分かれていて、処理はこの順序で行われる。
 
+
+データ定義
+=================
+
+データ定義については DrillHawkで扱うデータの定義 (model.md) を参照すること。
+
+DrillHawk プラグインの設定、使用方法
+=======================================
+
+DrillHawk プラグインの設定、使用方法については、 DrillHawk Users Manual (manual.md) を参照すること。

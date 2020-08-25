@@ -38,9 +38,11 @@ reconf_cell_template = """
 {{ '{:,}'.format(step.as_elapsed_sec) }} sec
 / <span class="small_font">RA:</span>
 {{ '{:,}'.format(step.ra_elapsed_sec) }} sec)</span>
+
 {% elif step.step_name == '_prepare' %}
 <span class="ra_cost_time"> <span class="small_font">TOTAL:</span>
 {{ '{:,}'.format(content.prepare_elapsed_sec) }} sec</span>
+
 {% else %}
 <span class="ra_cost_time"> <span class="small_font">TOTAL:</span>
 {{ '{:,}'.format(content.total_reconf_elapsed_sec) }} sec</span>
