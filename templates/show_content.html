@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='./css/style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='./css/style.css') }}?{{ now }}">
 {% endblock %}
 
 {% block body %}
@@ -133,19 +133,17 @@
 
 
   <div class="kibana_title">
-    <span id="kibana_title">kibana frame</span>
+    <span id="kibana_title">上図のバーをクリックすると、該当するKibana画面が新規Widnow(Tab)で表示されます。</span>
   </div>
+  <div style="height:12px"></div>
 
-  <!-- kibana グラフ領域 -->
-  <iframe name="kibana" id="kibana" width="1024" height="800">
-  </iframe>
 </div>
 {% endblock %}
 
 {% block script %}
 <script src="{{ url_for('static', filename='js/d3.v4.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/config.js') }}"></script>
-<script src="{{ url_for('static', filename='js/util.js') }}"></script>
+<script src="{{ url_for('static', filename='js/util.js') }}?{{ now }}"></script>
 <script>
   // for graph
   data =

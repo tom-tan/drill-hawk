@@ -10,6 +10,7 @@ from models.cwl_metrics import CwlMetrics
 from models.graph import Graph
 import os
 import json
+import time
 from plugins import loader
 
 #
@@ -140,12 +141,16 @@ def show_content():
         elif "time" in key:
             time_total_keys.append(key)
 
+    # now
+    now = time.time()
+
     return render_template(
         "show_content.html",
         contents=graph.workflows,
         data=json_data,
         cost_keys=str(cost_total_keys),
         time_keys=str(time_total_keys),
+        now=now
     )
 
 
