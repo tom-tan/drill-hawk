@@ -117,7 +117,7 @@ var initStackedBarChart = {
       target_uri = target_uri.replace(/{{to_datetime}}/, to_datetime);
       var url = base_url + target_uri;
       console.log(url);
-      window.open(url, "_blank");
+      window.open(url, "kibana_window");
 
       // kibana のグラフのタイトル領域を設定
       var kibana_title = d3.select("#kibana_title");
