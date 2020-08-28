@@ -40,9 +40,7 @@ class Graph:
                 instance_cost = item["price"]
 
         if instance_cost == -1:
-            print(
-                "{} instance_cost is not found in aws_prices.yml".format(instance_type)
-            )
+            print("{} instance_cost is not found in prices.yml".format(instance_type))
             raise ("unkown instance_type")
 
         return workflow_elapsed_sec * instance_cost / 60.0  # 60minutes

@@ -81,12 +81,19 @@ Elasticsearchに保存されているワークフローのリスト表示。
 
 ![Workflow List](./media/v01_list.png)
 
-
 ### Workflow Details
 
 リスト表示で選択した各ワークフローの詳細表示画面。複数のワークフローの同時表示が可能。
 
 ![workflow overview](./media/v02_show.png)
+
+- Workflow step details
+
+    ![Workflow step details](./media/v04_show_steps.png)
+
+- Bar chart (Elapsed Time or Usage Fee)
+
+    ![Bar chart](./media/v05_show_graph.png)
 
 ワークフローの棒グラフ上でのマウスオーバーにより、当該ステップの詳細情報をツールチップとして表示する。
 

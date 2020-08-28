@@ -46,3 +46,7 @@ https://opensource.org/licenses/MIT
 
 - Bootstrap (version 4.1.3) ... `static/js/bootstrap.min.js`
 - DataTables (version 1.10.18) ... `static/js/datatables.min.js`
+
+# Acknowledgement
+
+This work was supported by JST CREST Grant Number JPMJCR1501, Japan.

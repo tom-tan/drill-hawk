@@ -167,6 +167,7 @@ class CwlMetrics:
             "workflow_elapsed_sec"
         ] = dh_util.elapsed_sec(start_date, end_date)
 
+
         #
         # step毎の elapsed_sec 計算
         #
