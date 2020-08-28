@@ -115,7 +115,7 @@ class Graph:
             (d3_workflow, step, total_keys) = plugin.graph.build(
                 workflow_data, d3_workflow, steps, total_keys
             )
-            print("after d3_workflow {}".format(d3_workflow))
+            # print("after d3_workflow {}".format(d3_workflow))
 
         workflow_tbl = copy.copy(d3_workflow)
         workflow_tbl["steps"] = steps

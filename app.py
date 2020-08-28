@@ -113,7 +113,7 @@ def show_content():
         workflow_table_data["ext_columns"] = []
         for plugin in _plugins:
             workflow_table_data = plugin.table.build(workflow_table_data)
-        print(workflow_table_data)
+        # print(workflow_table_data)
         workflows.append(workflow_table_data)
 
     # app.logger.debug("worfkflows: {}".format(workflows))
