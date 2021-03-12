@@ -80,12 +80,17 @@
       <tr>
         <th scope="row">
           <div class="form-group form-check">
-            <input type="checkbox" class="form-check-input" name="workflow_check[]" value="{{ wf['workflow']['cwl_file'] }}">
+            <input type="checkbox" class="form-check-input" name="workflow_check[]" value="{{ wf['workflow']['row_id'] }}">
           {{wf.no}}
           </div>
         </th>
 
-        <td> {{name}} </td>
+        <td>
+           <img style="max-height: 80px"
+            src="{{ url_for('static', filename='./cwlimg/' + wf['workflow']['cwl_hash'] + '.png') }}"
+            onError="this.onerror=null;this.src='{{ url_for('static', filename='./image/none.png') }}';">
+           {{name}}
+        </td>
 
         <td> {% if wf['workflow']['inputs'] %}
             {{wf['workflow']['inputs']['filename']}}<br>
