@@ -4,7 +4,7 @@
 
 from elasticsearch import Elasticsearch
 import utils.dh_util as dh_util
-# import json
+import hashlib
 
 
 class CwlMetrics:
@@ -37,6 +37,7 @@ class CwlMetrics:
             "workflow.start_date",
             "workflow.end_date",
             "workflow.cwl_file",
+            "workflow.cwl",
             "workflow.inputs.*",
             "steps.*.start_date",
             "steps.*.end_date",
@@ -121,12 +122,27 @@ class CwlMetrics:
             # add no
             hit["_source"]["no"] = no
 
+            # add ElasticSearch ROW ID = _id
+            hit["_source"]["workflow"]["row_id"] = hit["_id"]
+
             # add workflow_elapsed_sec
             start_date = hit["_source"]["workflow"]["start_date"]
             end_date = hit["_source"]["workflow"]["end_date"]
-            hit["_source"]["workflow"][
-                "workflow_elapsed_sec"
-            ] = dh_util.elapsed_sec(start_date, end_date)
+            hit["_source"]["workflow"]["workflow_elapsed_sec"] = dh_util.elapsed_sec(
+                start_date, end_date
+            )
+
+            # cwl の中身のhash値を追加
+            if (
+                "cwl" in hit["_source"]["workflow"]
+                and "cwl_hash" not in hit["_source"]["workflow"]
+            ):
+                hit["_source"]["workflow"]["cwl_hash"] = hashlib.md5(
+                    str(hit["_source"]["workflow"]["cwl"]).encode("utf-8")
+                ).hexdigest()
+            else:
+                # cwl がない場合は、1x1 の透明画像を表示
+                hit["_source"]["workflow"]["cwl_hash"] = "none"
 
             # step 情報がなければskip
             if "steps" not in hit["_source"] or len(hit["_source"]["steps"]) == 0:
@@ -137,16 +153,15 @@ class CwlMetrics:
                 hit["_source"]["steps"].items(), key=lambda x: x[1]["start_date"]
             )
             hit["_source"]["steps"] = dict(sorted_steps)
+
             workflows.append(hit["_source"])
             no += 1
 
         return workflows
 
-    def search_simple(self, workflow_id):
-        #
-        # get workflow by ID
-        #
-        query = {"match": {"workflow.cwl_file.keyword": workflow_id}}
+    def search_simple(self, row_id):
+
+        query = {"match": {"_id": row_id}}
         body = {"query": query, "_source": self.source}
 
         # post ElasticSearch
@@ -163,10 +178,9 @@ class CwlMetrics:
         #
         start_date = cwl_workflow_data["workflow"]["start_date"]
         end_date = cwl_workflow_data["workflow"]["end_date"]
-        cwl_workflow_data["workflow"][
-            "workflow_elapsed_sec"
-        ] = dh_util.elapsed_sec(start_date, end_date)
-
+        cwl_workflow_data["workflow"]["workflow_elapsed_sec"] = dh_util.elapsed_sec(
+            start_date, end_date
+        )
 
         #
         # step毎の elapsed_sec 計算

@@ -66,6 +66,23 @@ def workflows():
     cwl = CwlMetrics(_config["es_endpoint"], _config["es_index_name"], _plugins)
     recs = cwl.search(from_date, to_date, list(set([keyword1, keyword2, keyword3])))
 
+    # CWL のワークフロー図のネタを保存
+    for rec in recs:
+        if "cwl" not in rec["workflow"]:
+            continue
+
+        cwl_pack_json = rec["workflow"]["cwl"]
+        cwl_json_filename = "./static/cwlimg/{}.json".format(
+            rec["workflow"]["cwl_hash"]
+        )
+
+        if os.path.exists(cwl_json_filename):
+            # 既存ならSKIP
+            continue
+
+        with open(cwl_json_filename, mode="w") as f:
+            f.write(json.dumps(cwl_pack_json))
+
     return render_template(
         "index.html",
         contents=recs,
@@ -150,7 +167,7 @@ def show_content():
         data=json_data,
         cost_keys=str(cost_total_keys),
         time_keys=str(time_total_keys),
-        now=now
+        now=now,
     )
 
 

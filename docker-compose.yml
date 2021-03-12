@@ -16,3 +16,8 @@ services:
       "envsubst < static/js/config.js.template
       > static/js/config.js
       && python app.py"
+  watch:
+    build: .
+    volumes:
+      - .:/app
+    command: python watch.py
