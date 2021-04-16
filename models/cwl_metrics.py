@@ -9,7 +9,7 @@ import hashlib
 
 class CwlMetrics:
     def __init__(self, elastic_search_endpoint, index_name, plugins, cells=None):
-        """ CwlMetricsを取得するクライアント
+        """CwlMetricsを取得するクライアント
 
         :param elastic_search_endpoint: ElasticSearchのエンドポイント(IPアドレス、ホスト名とポート番号を:で区切ったもの)
         :param index_name: ElasticSearch上のindex名
@@ -34,6 +34,7 @@ class CwlMetrics:
         #
         self.source = [
             "cwl_metrics_version",
+            "metrics_generator",
             "workflow.start_date",
             "workflow.end_date",
             "workflow.cwl_file",
@@ -154,10 +155,41 @@ class CwlMetrics:
             )
             hit["_source"]["steps"] = dict(sorted_steps)
 
+            # inputs の補正
+            inputs = hit["_source"]["workflow"]["inputs"]
+            inputs["filename"] = ""
+            inputs["total_size"] = 0
+
+            # ep3 & cwl用にinputsを補正
+            if self.is_ep3(hit["_source"]):
+                self.input_conv(inputs)
+
             workflows.append(hit["_source"])
             no += 1
 
         return workflows
+
+    def is_ep3(self, source):
+        """
+        ep3 metrics_generator 判定
+        """
+        if "metrics_generator" in source:
+            metrics_generator = source["metrics_generator"]
+            if "name" in metrics_generator and "ep3" in metrics_generator["name"]:
+                return True
+        return False
+
+    def input_conv(self, inputs):
+        """
+        帳票用に `filename` と `total_size` を抽出して設定
+        """
+        for key in inputs.keys():
+            if not isinstance(inputs[key], dict):
+                continue
+            if "class" in inputs[key] and inputs[key]["class"] == "File":
+                inputs["filename"] = inputs[key]["location"]
+                inputs["total_size"] = inputs[key]["size"]
+                break
 
     def search_simple(self, row_id):
 
@@ -173,6 +205,7 @@ class CwlMetrics:
         # assert len(res["hits"]["hits"]) == 1
 
         cwl_workflow_data = res["hits"]["hits"][0]["_source"]
+
         #
         # elapsed_sec計算
         #
@@ -196,8 +229,21 @@ class CwlMetrics:
                 # old type workflow format, new is 99-step_name
                 is_old_type = True
                 break
-        if is_old_type:
+        if is_old_type and not self.is_ep3(cwl_workflow_data):
             return None
+
+        if self.is_ep3(cwl_workflow_data):
+            # ep3 & cwl-metrics 対応
+            self.input_conv(cwl_workflow_data["workflow"]["inputs"])
+            # steps["cat"] -> steps["cat-N"]
+            no = 1
+            for k, v in cwl_workflow_data["steps"].items():
+                orignal_data = cwl_workflow_data["steps"].pop(k)
+                if "ec2_instance_type" not in orignal_data["platform"]:
+                    # TODO: 料金計算にはec2_instance_typeが必要
+                    orignal_data["platform"]["ec2_instance_type"] = "t2.medium"
+                cwl_workflow_data["steps"]["{}-{}".format(k, no)] = orignal_data
+                no += 1
 
         steps_sorted = dict(
             sorted(cwl_workflow_data["steps"].items(), key=lambda x: x[0].split("-")[1])
