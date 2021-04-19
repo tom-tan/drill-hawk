@@ -237,14 +237,13 @@ class CwlMetrics:
             self.input_conv(cwl_workflow_data["workflow"]["inputs"])
             # steps["cat"] -> steps["cat-N"]
             no = 1
-            for k, v in cwl_workflow_data["steps"].items():
+            for k in list(cwl_workflow_data["steps"].keys()):
                 orignal_data = cwl_workflow_data["steps"].pop(k)
                 if "ec2_instance_type" not in orignal_data["platform"]:
                     # TODO: 料金計算にはec2_instance_typeが必要
                     orignal_data["platform"]["ec2_instance_type"] = "t2.medium"
                 cwl_workflow_data["steps"]["{}-{}".format(k, no)] = orignal_data
                 no += 1
-
         steps_sorted = dict(
             sorted(cwl_workflow_data["steps"].items(), key=lambda x: x[0].split("-")[1])
         )
